@@ -5,8 +5,8 @@ import android.hardware.Sensor;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.ethz.inf.vs.a1.nethz.sensors.SensorTypes;
-import ch.ethz.inf.vs.a1.nethz.sensors.SensorTypesImpl;
+import sensors.nethz.a1.vs.inf.ethz.ch.sensors.SensorTypes;
+import sensors.nethz.a1.vs.inf.ethz.ch.sensors.SensorTypesImpl;
 
 import static org.junit.Assert.assertEquals;
 

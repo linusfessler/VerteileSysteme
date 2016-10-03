@@ -10,8 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import ch.ethz.inf.vs.a1.nethz.sensors.GraphContainer;
-import ch.ethz.inf.vs.a1.nethz.sensors.SensorActivity;
+import sensors.nethz.a1.vs.inf.ethz.ch.sensors.GraphContainer;
+import sensors.nethz.a1.vs.inf.ethz.ch.sensors.SensorActivity;
 
 @RunWith(AndroidJUnit4.class)
 public class GraphInstrumentationTest
