@@ -5,7 +5,7 @@ public interface SensorTypes {
     /**
      * Returns the number of values for a specific sensor type, e.g. Sensor.ACCELERATION
      * @param sensorType the sensor type id
-     * @return the number of vales for the given sensor type
+     * @return the number of values for the given sensor type
      */
     int getNumberValues(int sensorType);
 
