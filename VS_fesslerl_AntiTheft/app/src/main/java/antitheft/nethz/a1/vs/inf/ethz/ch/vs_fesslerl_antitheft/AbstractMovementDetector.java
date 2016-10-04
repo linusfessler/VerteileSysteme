@@ -1,4 +1,4 @@
-package ch.ethz.inf.vs.a1.nethz.antitheft.movement_detector;
+package antitheft.nethz.a1.vs.inf.ethz.ch.vs_fesslerl_antitheft;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
