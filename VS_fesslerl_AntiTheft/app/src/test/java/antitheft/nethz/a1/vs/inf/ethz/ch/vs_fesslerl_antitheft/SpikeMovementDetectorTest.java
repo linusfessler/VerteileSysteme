@@ -1,4 +1,4 @@
-package ch.ethz.inf.vs.a1.nethz.antitheft;
+package antitheft.nethz.a1.vs.inf.ethz.ch.vs_fesslerl_antitheft;
 
 import ch.ethz.inf.vs.a1.nethz.antitheft.AlarmCallback;
 import ch.ethz.inf.vs.a1.nethz.antitheft.movement_detector.SpikeMovementDetector;
