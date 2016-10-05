@@ -1,17 +1,19 @@
-package antitheft.nethz.a1.vs.inf.ethz.ch.vs_fesslerl_antitheft;
+package ch.ethz.inf.vs.a1.fesslerl.antitheft;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-
-import ch.ethz.inf.vs.a1.nethz.antitheft.AlarmCallback;
+import android.hardware.SensorManager;
+import android.preference.PreferenceManager;
 
 public abstract class AbstractMovementDetector implements SensorEventListener {
 
     protected AlarmCallback callback;
     protected int sensitivity;
 
-    public AbstractMovementDetector(AlarmCallback callback, int sensitivity){
+    private int mSensor2Type;
+
+    public AbstractMovementDetector(AlarmCallback callback, int sensitivity) {
         this.callback = callback;
         this.sensitivity = sensitivity;
     }
@@ -19,13 +21,10 @@ public abstract class AbstractMovementDetector implements SensorEventListener {
     // Sensor monitoring
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-            // Copy values because the event is not owned by the application
-            float[] values = event.values.clone();
-            if(doAlarmLogic(values)){
-                callback.onDelayStarted();
-            }
-        }
+        // Copy values because the event is not owned by the application
+        float[] values = event.values.clone();
+        if (doAlarmLogic(values))
+            callback.onDelayStarted();
     }
 
     @Override
