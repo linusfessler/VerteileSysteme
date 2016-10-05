@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.media.AudioAttributes;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -32,6 +33,7 @@ public class AntiTheftService extends Service implements AlarmCallback {
     private int mSensor2Type;
     private SharedPreferences mPreferences;
     private Ringtone mRingtone;
+    private AudioAttributes mAttributes;
 
     @Override
     public void onCreate() {
@@ -45,6 +47,10 @@ public class AntiTheftService extends Service implements AlarmCallback {
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+        mAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_ALARM)
+                .build();
     }
 
     @Nullable
@@ -90,6 +96,7 @@ public class AntiTheftService extends Service implements AlarmCallback {
                 try {
                     String ringtoneString = mPreferences.getString(SettingsActivity.ALARM, "DEFAULT_SOUND");
                     mRingtone = RingtoneManager.getRingtone(getApplicationContext(), Uri.parse(ringtoneString));
+                    mRingtone.setAudioAttributes(mAttributes);
                     mRingtone.play();
                 } catch (Exception e) {
                     e.printStackTrace();
