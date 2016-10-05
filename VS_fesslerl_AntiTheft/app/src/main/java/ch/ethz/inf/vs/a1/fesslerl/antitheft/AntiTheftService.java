@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -30,10 +31,14 @@ public class AntiTheftService extends Service implements AlarmCallback {
     private Notification mNotification;
     private final int mNotificationId = 1;
 
-    private SensorManager mSensorManager;
     private SpikeMovementDetector mDetector;
-    private int mSensor2Type;
+    private UnlockReceiver mUnlockReceiver;
+
+    private SensorManager mSensorManager;
+    private Sensor mSensor2;
+
     private SharedPreferences mPreferences;
+
     private Ringtone mRingtone;
     private AudioAttributes mAttributes;
 
@@ -63,16 +68,21 @@ public class AntiTheftService extends Service implements AlarmCallback {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mNotificationManager.notify(mNotificationId, mNotification);
-
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         int sensitivity = (int)Double.parseDouble(mPreferences.getString(SettingsActivity.SENSITIVITY, "0"));
-        int mSensor2Type = Integer.parseInt(mPreferences.getString(SettingsActivity.SENSOR2TYPE, "0"));
+        int sensor2Type = Integer.parseInt(mPreferences.getString(SettingsActivity.SENSOR2TYPE, "0"));
 
         mDetector = new SpikeMovementDetector(this, sensitivity);
 
         mSensorManager.registerListener(mDetector, mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION), SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(mDetector, mSensorManager.getDefaultSensor(mSensor2Type), SensorManager.SENSOR_DELAY_NORMAL);
+        mSensor2 = mSensorManager.getDefaultSensor(sensor2Type);
+        if (mSensor2 != null)
+            mSensorManager.registerListener(mDetector, mSensor2, SensorManager.SENSOR_DELAY_NORMAL);
+
+        mUnlockReceiver = new UnlockReceiver();
+        registerReceiver(mUnlockReceiver, new IntentFilter("android.intent.action.USER_PRESENT"));
+
+        mNotificationManager.notify(mNotificationId, mNotification);
 
         return Service.START_STICKY;
     }
@@ -80,7 +90,11 @@ public class AntiTheftService extends Service implements AlarmCallback {
     @Override
     public void onDestroy() {
         mSensorManager.unregisterListener(mDetector, mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
-        mSensorManager.unregisterListener(mDetector, mSensorManager.getDefaultSensor(mSensor2Type));
+        if (mSensor2 != null)
+            mSensorManager.unregisterListener(mDetector, mSensor2);
+
+        unregisterReceiver(mUnlockReceiver);
+
         mNotificationManager.cancel(mNotificationId);
         if (mRingtone != null)
             mRingtone.stop();

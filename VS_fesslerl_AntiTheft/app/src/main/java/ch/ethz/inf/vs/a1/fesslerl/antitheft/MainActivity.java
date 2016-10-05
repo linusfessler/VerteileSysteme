@@ -1,9 +1,6 @@
 package ch.ethz.inf.vs.a1.fesslerl.antitheft;
 
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,8 +11,6 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SharedPreferences mPreferences;
-    private UnlockReceiver mUnlockReceiver;
     private ImageButton mAlarmToggle;
     private Toast mToast;
 
@@ -24,18 +19,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
         setAlarmToggleDrawable(AntiTheftService.isEnabled);
-
-        mUnlockReceiver = new UnlockReceiver();
-        registerReceiver(mUnlockReceiver, new IntentFilter("android.intent.action.USER_PRESENT"));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(mUnlockReceiver);
     }
 
     @Override
@@ -60,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         setAlarmToggleDrawable(AntiTheftService.isEnabled);
     }
 
-    public void setAlarmToggleDrawable(boolean isEnabled) {
+    void setAlarmToggleDrawable(boolean isEnabled) {
         getAlarmToggle().setImageResource(isEnabled ? R.drawable.locked : R.drawable.unlocked);
     }
 
