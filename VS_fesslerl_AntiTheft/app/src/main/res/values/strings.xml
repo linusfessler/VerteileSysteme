@@ -1,3 +1,18 @@
 <resources>
-    <string name="app_name">VS_fesslerl_AntiTheft</string>
+    <string name="app_name">Anti Theft Service</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="sensitivity">Sensitivity</string>
+    <string name="delay">Delay (seconds)</string>
+    <string name="alarm">Alarm</string>
+    <string name="sensor2">Additional Sensor</string>
+
+    <string name="title_notification">Anti Theft Service Enabled</string>
+    <string name="text_notification">Tap to return to app.</string>
+
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
 </resources>

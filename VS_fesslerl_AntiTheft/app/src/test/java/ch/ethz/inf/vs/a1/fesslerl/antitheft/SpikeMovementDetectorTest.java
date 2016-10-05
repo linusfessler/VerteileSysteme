@@ -1,7 +1,4 @@
-package antitheft.nethz.a1.vs.inf.ethz.ch.vs_fesslerl_antitheft;
-
-import ch.ethz.inf.vs.a1.nethz.antitheft.AlarmCallback;
-import ch.ethz.inf.vs.a1.nethz.antitheft.movement_detector.SpikeMovementDetector;
+package ch.ethz.inf.vs.a1.fesslerl.antitheft;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +66,7 @@ public class SpikeMovementDetectorTest implements AlarmCallback {
     }
 
     @Override
-    public void onTimeoutStarted() {
-        // Do not do anything
+    public void onDelayStarted() {
+
     }
 }
