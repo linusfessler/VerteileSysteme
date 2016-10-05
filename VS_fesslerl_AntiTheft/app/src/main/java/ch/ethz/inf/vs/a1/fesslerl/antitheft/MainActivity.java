@@ -26,8 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        boolean isRunning = mPreferences.getBoolean(SettingsActivity.IS_RUNNING, false);
-        setAlarmToggleDrawable(isRunning);
+        setAlarmToggleDrawable(AntiTheftService.isEnabled);
 
         mUnlockReceiver = new UnlockReceiver();
         registerReceiver(mUnlockReceiver, new IntentFilter("android.intent.action.USER_PRESENT"));
@@ -46,27 +45,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onAlarmToggleClicked(View view) {
-        boolean isRunning = !mPreferences.getBoolean(SettingsActivity.IS_RUNNING, false);
-
-        mPreferences.edit()
-                .putBoolean(SettingsActivity.IS_RUNNING, isRunning)
-                .apply();
-
-        if (isRunning)
+        if (!AntiTheftService.isEnabled)
             startService(new Intent(MainActivity.this, AntiTheftService.class));
         else
             stopService(new Intent(MainActivity.this, AntiTheftService.class));
 
+        AntiTheftService.isEnabled = !AntiTheftService.isEnabled;
+
         if (mToast != null)
             mToast.cancel();
-        mToast = Toast.makeText(MainActivity.this, "Anti Theft Service " + (isRunning ? "started" : "stopped"), Toast.LENGTH_SHORT);
+        mToast = Toast.makeText(MainActivity.this, "Anti Theft Service " + (AntiTheftService.isEnabled ? "started" : "stopped"), Toast.LENGTH_SHORT);
         mToast.show();
 
-        setAlarmToggleDrawable(isRunning);
+        setAlarmToggleDrawable(AntiTheftService.isEnabled);
     }
 
-    public void setAlarmToggleDrawable(boolean isRunning) {
-        getAlarmToggle().setImageResource(isRunning ? R.drawable.locked : R.drawable.unlocked);
+    public void setAlarmToggleDrawable(boolean isEnabled) {
+        getAlarmToggle().setImageResource(isEnabled ? R.drawable.locked : R.drawable.unlocked);
     }
 
     ImageButton getAlarmToggle() {

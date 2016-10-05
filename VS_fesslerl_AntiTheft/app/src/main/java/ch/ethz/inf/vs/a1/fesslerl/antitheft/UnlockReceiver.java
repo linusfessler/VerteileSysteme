@@ -26,8 +26,6 @@ public class UnlockReceiver extends BroadcastReceiver {
         if (keyguardManager.isKeyguardSecure())
             context.stopService(new Intent(context, AntiTheftService.class));
 
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putBoolean(SettingsActivity.IS_RUNNING, false);
-        editor.commit();
+        AntiTheftService.isEnabled = false;
     }
 }

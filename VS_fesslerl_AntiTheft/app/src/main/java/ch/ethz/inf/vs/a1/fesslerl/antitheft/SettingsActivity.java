@@ -31,9 +31,6 @@ import java.util.List;
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
-    public static final String PREFERENCES = "preferences";
-
-    public static final String IS_RUNNING = "is_running";
     public static final String SENSITIVITY = "sensitivity";
     public static final String DELAY = "delay";
     public static final String SENSOR2TYPE = "sensor2_type";

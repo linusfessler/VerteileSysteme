@@ -24,6 +24,8 @@ import android.support.v4.app.NotificationCompat;
 
 public class AntiTheftService extends Service implements AlarmCallback {
 
+    public static boolean isEnabled = false;
+
     private NotificationManager mNotificationManager;
     private Notification mNotification;
     private final int mNotificationId = 1;
@@ -94,10 +96,12 @@ public class AntiTheftService extends Service implements AlarmCallback {
         handler.postDelayed(new Runnable() {
             public void run() {
                 try {
-                    String ringtoneString = mPreferences.getString(SettingsActivity.ALARM, "DEFAULT_SOUND");
-                    mRingtone = RingtoneManager.getRingtone(getApplicationContext(), Uri.parse(ringtoneString));
-                    mRingtone.setAudioAttributes(mAttributes);
-                    mRingtone.play();
+                    if (isEnabled) {
+                        String ringtoneString = mPreferences.getString(SettingsActivity.ALARM, "DEFAULT_SOUND");
+                        mRingtone = RingtoneManager.getRingtone(getApplicationContext(), Uri.parse(ringtoneString));
+                        mRingtone.setAudioAttributes(mAttributes);
+                        mRingtone.play();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
