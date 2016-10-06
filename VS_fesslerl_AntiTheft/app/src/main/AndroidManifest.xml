@@ -30,7 +30,6 @@
     </application>
 
     <uses-permission
-        android:name="android.permission.WAKE_LOCK"
-        android:maxSdkVersion="18" />
+        android:name="android.permission.WAKE_LOCK" />
 
 </manifest>

@@ -3,7 +3,9 @@ package ch.ethz.inf.vs.a1.fesslerl.antitheft;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.PowerManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -19,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     private final int PERMISSION_REQUEST_CODE = 1;
 
     private ImageButton mAlarmToggle;
+    private UnlockReceiver mUnlockReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         setContentView(R.layout.activity_main);
 
         setAlarmToggleDrawable(AntiTheftService.isEnabled);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (AntiTheftService.isEnabled)
+            stopService();
     }
 
     @Override
@@ -45,33 +55,32 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         int permissionCheck  = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WAKE_LOCK);
 
-        // Start service if already has permission
+        // Start service if it already has permission for wake lock
         if (permissionCheck == PackageManager.PERMISSION_GRANTED)
             startService();
-        // Else ask user to get permission
+        // Else request permission
         else {
-            // Should we show an explanation?
-            /*if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.WAKE_LOCK)) {*/
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-                showExplanation();
-            /*} else {
-                // No explanation needed, we can request the permission.
-                requestPermission();
-            }*/
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WAKE_LOCK},
+                    PERMISSION_REQUEST_CODE);
         }
     }
 
-    private void startService() {
+    public void startService() {
         startService(new Intent(MainActivity.this, AntiTheftService.class));
         setAlarmToggleDrawable(true);
+
+        // Register unlock receiver to disable service when device is unlocked
+        mUnlockReceiver = new UnlockReceiver(this);
+        registerReceiver(mUnlockReceiver, new IntentFilter("android.intent.action.USER_PRESENT"));
     }
 
-    private void stopService() {
+    public void stopService() {
         stopService(new Intent(MainActivity.this, AntiTheftService.class));
         setAlarmToggleDrawable(false);
+
+        // Unregister unlock receiver
+        unregisterReceiver(mUnlockReceiver);
     }
 
     private void setAlarmToggleDrawable(boolean isEnabled) {
@@ -80,30 +89,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         mAlarmToggle.setImageResource(isEnabled ? R.drawable.locked : R.drawable.unlocked);
     }
 
-    private void showExplanation() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.title_permission_request))
-                .setMessage(getString(R.string.message_permission_request))
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        requestPermission();
-                    }
-                });
-        builder.create().show();
-    }
-
-    private void requestPermission() {
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.WAKE_LOCK},
-                PERMISSION_REQUEST_CODE);
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_CODE && grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            ;//startService();
+            startService();
     }
 
     // Start settings activity

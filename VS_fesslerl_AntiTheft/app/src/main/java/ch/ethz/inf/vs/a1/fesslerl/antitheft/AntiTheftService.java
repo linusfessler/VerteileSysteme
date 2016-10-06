@@ -35,7 +35,6 @@ public class AntiTheftService extends Service implements AlarmCallback {
     private final int mNotificationId = 1;
 
     private SpikeMovementDetector mDetector;
-    private UnlockReceiver mUnlockReceiver;
     private PowerManager.WakeLock mWakeLock;
 
     private SensorManager mSensorManager;
@@ -71,6 +70,7 @@ public class AntiTheftService extends Service implements AlarmCallback {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+
         return null;
     }
 
@@ -94,10 +94,6 @@ public class AntiTheftService extends Service implements AlarmCallback {
         mSensor2 = mSensorManager.getDefaultSensor(sensor2Type);
         if (mSensor2 != null)
             mSensorManager.registerListener(mDetector, mSensor2, SensorManager.SENSOR_DELAY_NORMAL);
-
-        // Register unlock receiver to disable service when device is unlocked
-        mUnlockReceiver = new UnlockReceiver();
-        registerReceiver(mUnlockReceiver, new IntentFilter("android.intent.action.USER_PRESENT"));
 
         // Start ongoing notification
         mNotificationManager.notify(mNotificationId, mNotification);
@@ -123,9 +119,6 @@ public class AntiTheftService extends Service implements AlarmCallback {
         // Unregister additional sensor listener if selected in preferences
         if (mSensor2 != null)
             mSensorManager.unregisterListener(mDetector, mSensor2);
-
-        // Unregister unlock receiver
-        unregisterReceiver(mUnlockReceiver);
 
         // Release partial WakeLock
         if (mWakeLock != null) {
