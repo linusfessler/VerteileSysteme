@@ -17,10 +17,17 @@ import android.widget.Switch;
 
 public class UnlockReceiver extends BroadcastReceiver {
 
+    private MainActivity mActivity;
+
+    public UnlockReceiver(MainActivity activity) {
+        super();
+        this.mActivity = activity;
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
         if (keyguardManager.isKeyguardSecure())
-            context.stopService(new Intent(context, AntiTheftService.class));
+            mActivity.stopService();
     }
 }

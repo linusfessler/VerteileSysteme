@@ -7,9 +7,6 @@
     <string name="alarm">Alarm</string>
     <string name="sensor2">Additional Sensor</string>
 
-    <string name="title_permission_request">Permission needed</string>
-    <string name="message_permission_request">Rationale.</string>
-
     <string name="title_notification">Anti Theft Service Enabled</string>
     <string name="text_notification">Tap to return to app.</string>
 
