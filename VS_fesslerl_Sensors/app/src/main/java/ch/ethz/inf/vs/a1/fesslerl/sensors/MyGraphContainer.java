@@ -27,7 +27,7 @@ public class MyGraphContainer implements GraphContainer {
 
     public MyGraphContainer(GraphView graph, String unit, int numVals){
         this.graph = graph;
-        graph.getViewport().setXAxisBoundsManual(true);
+        //graph.getViewport().setXAxisBoundsManual(true);
         graph.getGridLabelRenderer().setHorizontalAxisTitle("s");
         graph.getGridLabelRenderer().setVerticalAxisTitle(unit);
         for(int i = 0; i < numVals; ++i) {
@@ -37,23 +37,22 @@ public class MyGraphContainer implements GraphContainer {
             series.add(s);
             graph.addSeries(s);
         }
-
     }
+
     @Override
     public void addValues(double xIndex, float[] values) {
         if(xIndex > oldVal) { // this is necessary because during testing it sometimes happened, that apparantly the new x-value was not greater than the old one. this leads to an error when appending data.
-            while (vals.size() >= 100)
+            while (vals.size() >= MAX_DATA_POINTS)
                 vals.removeFirst();
             vals.addLast(values);
 
-            graph.getViewport().setMaxX(xIndex);
-            graph.getViewport().setMinX(series.get(0).getLowestValueX());
-            for (int i = 0; i < values.length; ++i) {
+            //graph.getViewport().setMaxX(xIndex);
+            //graph.getViewport().setMinX(series.get(0).getLowestValueX());
+            for (int i = 0; i < values.length; i++)
                 series.get(i).appendData(new DataPoint(xIndex, values[i]), true, MAX_DATA_POINTS);
-            }
+
             oldVal = xIndex;
         }
-
     }
 
     @Override

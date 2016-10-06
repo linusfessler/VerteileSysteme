@@ -10,9 +10,7 @@
     <string name="title_notification">Anti Theft Service Enabled</string>
     <string name="text_notification">Tap to return to app.</string>
 
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
+    <string name="message_started">Anti Theft Service started</string>
+    <string name="message_stopped">Anti Theft Service stopped</string>
+    <string name="message_on_preference_changed">Changes will take effect when service is restarted</string>
 </resources>

@@ -1,14 +1,11 @@
 package ch.ethz.inf.vs.a1.fesslerl.antitheft;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.os.PowerManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -29,13 +26,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         setContentView(R.layout.activity_main);
 
         setAlarmToggleDrawable(AntiTheftService.isEnabled);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (AntiTheftService.isEnabled)
-            stopService();
     }
 
     @Override
@@ -80,13 +70,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         setAlarmToggleDrawable(false);
 
         // Unregister unlock receiver
-        unregisterReceiver(mUnlockReceiver);
+        if (mUnlockReceiver != null)
+            unregisterReceiver(mUnlockReceiver);
     }
 
-    private void setAlarmToggleDrawable(boolean isEnabled) {
+    private void setAlarmToggleDrawable(boolean setEnabled) {
         if (mAlarmToggle == null)
             mAlarmToggle = (ImageButton) findViewById(R.id.alarm_toggle);
-        mAlarmToggle.setImageResource(isEnabled ? R.drawable.locked : R.drawable.unlocked);
+        mAlarmToggle.setImageResource(setEnabled ? R.drawable.locked : R.drawable.unlocked);
     }
 
     @Override

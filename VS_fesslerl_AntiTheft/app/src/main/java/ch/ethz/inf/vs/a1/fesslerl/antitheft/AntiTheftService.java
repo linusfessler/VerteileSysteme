@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -30,6 +29,8 @@ public class AntiTheftService extends Service implements AlarmCallback {
 
     public static boolean isEnabled = false;
 
+    private static Toast toast;
+
     private NotificationManager mNotificationManager;
     private Notification mNotification;
     private final int mNotificationId = 1;
@@ -42,10 +43,11 @@ public class AntiTheftService extends Service implements AlarmCallback {
 
     private SharedPreferences mPreferences;
 
+    private Handler mHandler;
+    private Runnable mRunnable;
+
     private Ringtone mRingtone;
     private AudioAttributes mAttributes;
-
-    private Toast mToast;
 
     @Override
     public void onCreate() {
@@ -65,12 +67,28 @@ public class AntiTheftService extends Service implements AlarmCallback {
         mAttributes = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_ALARM)
                 .build();
+
+        // Handler and runnable to play alarm after delay
+        mHandler = new Handler();
+        mRunnable = new Runnable() {
+            public void run() {
+                try {
+                    // Get ringtone from preferences
+                    String ringtoneString = mPreferences.getString(SettingsActivity.ALARM, "DEFAULT_SOUND");
+                    mRingtone = RingtoneManager.getRingtone(getApplicationContext(), Uri.parse(ringtoneString));
+                    // Set volume to ringtone volume
+                    mRingtone.setAudioAttributes(mAttributes);
+                    mRingtone.play();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-
         return null;
     }
 
@@ -104,7 +122,7 @@ public class AntiTheftService extends Service implements AlarmCallback {
         mWakeLock.acquire();
 
         // Show toast
-        showToast();
+        showToast(this, getString(R.string.message_stopped));
 
         return Service.START_STICKY;
     }
@@ -133,8 +151,11 @@ public class AntiTheftService extends Service implements AlarmCallback {
         if (mRingtone != null && mRingtone.isPlaying())
             mRingtone.stop();
 
+        // Don't play the alarm that is queued to play after the delay
+        mHandler.removeCallbacks(mRunnable);
+
         // Show toast
-        showToast();
+        showToast(this, getString(R.string.message_started));
     }
 
     @Override
@@ -149,32 +170,14 @@ public class AntiTheftService extends Service implements AlarmCallback {
         // Get delay from preferences
         int delay = (int)Double.parseDouble(mPreferences.getString(SettingsActivity.DELAY, "0"));
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                try {
-                    if (isEnabled) {
-                        /*if (mRingtone != null && mRingtone.isPlaying())
-                            mRingtone.stop();*/
-
-                        // Get ringtone from preferences
-                        String ringtoneString = mPreferences.getString(SettingsActivity.ALARM, "DEFAULT_SOUND");
-                        mRingtone = RingtoneManager.getRingtone(getApplicationContext(), Uri.parse(ringtoneString));
-                        // Set volume to ringtone volume
-                        mRingtone.setAudioAttributes(mAttributes);
-                        mRingtone.play();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, 1000 * delay);
+        // Play alarm after delay
+        mHandler.postDelayed(mRunnable, 1000 * delay);
     }
 
-    void showToast() {
-        if (mToast != null)
-            mToast.cancel();
-        mToast = Toast.makeText(this, "Anti Theft Service " + (isEnabled ? "started" : "stopped"), Toast.LENGTH_SHORT);
-        mToast.show();
+    public static void showToast(Context context, String message) {
+        if (toast != null)
+            toast.cancel();
+        toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        toast.show();
     }
 }

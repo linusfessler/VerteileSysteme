@@ -1,15 +1,9 @@
 package ch.ethz.inf.vs.a1.fesslerl.antitheft;
 
-import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.media.Image;
-import android.preference.PreferenceManager;
-import android.widget.ImageButton;
-import android.widget.Switch;
 
 /**
  * Created by linus on 04.10.2016.
