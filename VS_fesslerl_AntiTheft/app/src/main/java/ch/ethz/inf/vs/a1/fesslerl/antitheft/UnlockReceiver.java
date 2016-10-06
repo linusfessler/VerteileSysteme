@@ -20,9 +20,7 @@ public class UnlockReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
-        if (keyguardManager.isKeyguardSecure()) {
+        if (keyguardManager.isKeyguardSecure())
             context.stopService(new Intent(context, AntiTheftService.class));
-            AntiTheftService.isEnabled = false;
-        }
     }
 }
