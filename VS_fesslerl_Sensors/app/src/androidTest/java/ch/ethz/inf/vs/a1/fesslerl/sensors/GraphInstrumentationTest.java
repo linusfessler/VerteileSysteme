@@ -155,7 +155,7 @@ public class GraphInstrumentationTest
         assertEquals(target.length, retrievedValues.length);
         for (int i = 0; i < target.length; i++) {
             assertEquals(target[i].length, retrievedValues[i].length);
-            for (int j = 0; j < target[0].length; j++) {
+            for (int j = 0; j < target[i].length; j++) {
                 assertEquals(target[i][j], retrievedValues[i][j]);
             }
         }
