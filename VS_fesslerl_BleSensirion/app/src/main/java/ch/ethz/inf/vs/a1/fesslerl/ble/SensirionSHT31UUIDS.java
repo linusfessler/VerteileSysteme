@@ -1,4 +1,4 @@
-package ch.ethz.inf.vs.a1.fesslerl.ble.vs_fesslerl_blesensirion;
+package ch.ethz.inf.vs.a1.fesslerl.ble;
 
 
 import java.util.UUID;

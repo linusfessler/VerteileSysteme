@@ -1,5 +1,6 @@
-package ch.ethz.inf.vs.a1.fesslerl.ble.vs_fesslerl_blesensirion;
+package ch.ethz.inf.vs.a1.fesslerl.ble;
 
+import android.bluetooth.BluetoothManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -9,5 +10,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //final BluetoothManager = (BluetoothManager)
     }
 }
