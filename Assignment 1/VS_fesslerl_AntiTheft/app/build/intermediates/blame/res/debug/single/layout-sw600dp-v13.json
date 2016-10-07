@@ -1,5 +1,9 @@
 [
     {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\layout-sw600dp-v13\\design_layout_snackbar.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\design\\24.2.1\\res\\layout-sw600dp-v13\\design_layout_snackbar.xml"
+    },
+    {
         "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\layout-sw600dp-v13\\design_layout_snackbar.xml",
         "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\design\\24.2.1\\res\\layout-sw600dp-v13\\design_layout_snackbar.xml"
     }

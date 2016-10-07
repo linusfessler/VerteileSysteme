@@ -4,16 +4,36 @@
         "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_tint_switch_thumb.xml"
     },
     {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_primary_text_disable_only_material_light.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_primary_text_disable_only_material_light.xml"
+    },
+    {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_tint_switch_thumb.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_tint_switch_thumb.xml"
+    },
+    {
         "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_secondary_text_material_dark.xml",
         "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_secondary_text_material_dark.xml"
     },
     {
-        "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_btn_colored_borderless_text_material.xml",
-        "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_btn_colored_borderless_text_material.xml"
-    },
-    {
         "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\design_error.xml",
         "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\design\\24.2.1\\res\\color\\design_error.xml"
+    },
+    {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_primary_text_disable_only_material_dark.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_primary_text_disable_only_material_dark.xml"
+    },
+    {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\switch_thumb_material_dark.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\switch_thumb_material_dark.xml"
+    },
+    {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_tint_default.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_tint_default.xml"
+    },
+    {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_tint_switch_track.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_tint_switch_track.xml"
     },
     {
         "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_search_url_text.xml",
@@ -24,12 +44,16 @@
         "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_tint_seek_thumb.xml"
     },
     {
-        "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_tint_edittext.xml",
-        "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_tint_edittext.xml"
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_tint_seek_thumb.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_tint_seek_thumb.xml"
     },
     {
-        "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_tint_btn_checkable.xml",
-        "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_tint_btn_checkable.xml"
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_search_url_text.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_search_url_text.xml"
+    },
+    {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_tint_spinner.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_tint_spinner.xml"
     },
     {
         "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_secondary_text_material_light.xml",
@@ -38,14 +62,6 @@
     {
         "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_primary_text_disable_only_material_light.xml",
         "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_primary_text_disable_only_material_light.xml"
-    },
-    {
-        "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\switch_thumb_material_light.xml",
-        "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\switch_thumb_material_light.xml"
-    },
-    {
-        "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\design_tint_password_toggle.xml",
-        "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\design\\24.2.1\\res\\color\\design_tint_password_toggle.xml"
     },
     {
         "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_primary_text_material_light.xml",
@@ -60,8 +76,24 @@
         "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_tint_switch_track.xml"
     },
     {
-        "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_tint_spinner.xml",
-        "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_tint_spinner.xml"
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_primary_text_material_light.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_primary_text_material_light.xml"
+    },
+    {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\design_tint_password_toggle.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\design\\24.2.1\\res\\color\\design_tint_password_toggle.xml"
+    },
+    {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\switch_thumb_material_light.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\switch_thumb_material_light.xml"
+    },
+    {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_tint_edittext.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_tint_edittext.xml"
+    },
+    {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_btn_colored_borderless_text_material.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_btn_colored_borderless_text_material.xml"
     },
     {
         "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_tint_default.xml",
@@ -74,5 +106,49 @@
     {
         "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_primary_text_material_dark.xml",
         "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_primary_text_material_dark.xml"
+    },
+    {
+        "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_btn_colored_borderless_text_material.xml",
+        "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_btn_colored_borderless_text_material.xml"
+    },
+    {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_primary_text_material_dark.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_primary_text_material_dark.xml"
+    },
+    {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_tint_btn_checkable.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_tint_btn_checkable.xml"
+    },
+    {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_secondary_text_material_dark.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_secondary_text_material_dark.xml"
+    },
+    {
+        "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_tint_edittext.xml",
+        "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_tint_edittext.xml"
+    },
+    {
+        "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_tint_btn_checkable.xml",
+        "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_tint_btn_checkable.xml"
+    },
+    {
+        "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\switch_thumb_material_light.xml",
+        "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\switch_thumb_material_light.xml"
+    },
+    {
+        "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\design_tint_password_toggle.xml",
+        "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\design\\24.2.1\\res\\color\\design_tint_password_toggle.xml"
+    },
+    {
+        "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_tint_spinner.xml",
+        "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_tint_spinner.xml"
+    },
+    {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_secondary_text_material_light.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\color\\abc_secondary_text_material_light.xml"
+    },
+    {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\color\\design_error.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\design\\24.2.1\\res\\color\\design_error.xml"
     }
 ]

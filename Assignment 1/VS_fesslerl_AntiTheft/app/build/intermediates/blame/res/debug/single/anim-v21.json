@@ -1,7 +1,19 @@
 [
     {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\anim-v21\\design_appbar_state_list_animator.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\design\\24.2.1\\res\\anim-v21\\design_appbar_state_list_animator.xml"
+    },
+    {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\anim-v21\\design_bottom_sheet_slide_out.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\design\\24.2.1\\res\\anim-v21\\design_bottom_sheet_slide_out.xml"
+    },
+    {
         "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\anim-v21\\design_bottom_sheet_slide_in.xml",
         "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\design\\24.2.1\\res\\anim-v21\\design_bottom_sheet_slide_in.xml"
+    },
+    {
+        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\anim-v21\\design_bottom_sheet_slide_in.xml",
+        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\exploded-aar\\com.android.support\\design\\24.2.1\\res\\anim-v21\\design_bottom_sheet_slide_in.xml"
     },
     {
         "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\anim-v21\\design_appbar_state_list_animator.xml",

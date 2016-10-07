@@ -47,7 +47,6 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
         GraphView graph = (GraphView) findViewById(R.id.graph);
         graphContainer = new MyGraphContainer(graph,unit,numVals);
-
     }
 
     public GraphContainer getGraphContainer() {
