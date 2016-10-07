@@ -1,4 +1,0 @@
-<resources>
-    <string name="app_name">VS_fesslerl_Sensors</string>
-    <string name="intent_extra_sensorname">sensor_index</string>
-</resources>
