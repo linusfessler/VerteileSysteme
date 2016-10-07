@@ -1,0 +1,137 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{enumerate}
+\usepackage{listings}
+\usepackage{color}
+
+\setlength\parindent{0pt}
+\setcounter{section}{3}
+
+\definecolor{pblue}{rgb}{0.13,0.13,1}
+\definecolor{pgreen}{rgb}{0,0.5,0}
+\definecolor{pred}{rgb}{0.9,0,0}
+\definecolor{pgrey}{rgb}{0.46,0.45,0.48}
+
+\lstset{
+	language=Java,
+	tabsize=2,
+	showspaces=false,
+	showtabs=false,
+	breaklines=true,
+	showstringspaces=false,
+	breakatwhitespace=true,
+	commentstyle=\color{pgreen},
+	keywordstyle=\color{pblue},
+	stringstyle=\color{pred},
+	basicstyle=\small\ttfamily,
+	numbers=left,
+	numberstyle=\tiny,
+	numbersep=5pt
+}
+
+\title{Distributed Systems HS 2016\\Assignment 1}
+\author{Markus Hauptner, Johannes Beck, Linus Fessler}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Mini-Test}
+
+\begin{enumerate}
+
+\item (Sensor Framework)
+\begin{enumerate}[A)]
+
+\item 
+\begin{enumerate}[a)]
+
+\item List available sensors on a device
+\begin{lstlisting}
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+	super.onCreate(savedInstanceState);
+	setContentView(R.layout.activity_main);
+	
+	SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+	List<Sensor> sensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
+	
+	ListView listView = (ListView) findViewById (R.id.listView1);
+	listView.setAdapter(new ArrayAdapter<Sensor>(this, android.R.layout.list_item,  sensor));
+}
+\end{lstlisting}
+
+\item Retrieve the value range of a specific sensor
+\begin{lstlisting}
+SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_*); // where * can be replaced by the type of the sensor
+float valueRange = sensor.getMaximumRange();
+\end{lstlisting}
+
+\item Retrieve the value range of a specific sensor
+\begin{lstlisting}
+SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER:
+// to register
+sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST);
+// and to unregister
+sensorManager.unregisterListener(this);
+\end{lstlisting}
+
+\end{enumerate}
+
+\item
+The mistake is in line 15/22 where event.values are not copied. This is a mistake since the application doesn't own the event and thus shouldn't change it's values as they might be used again by other applications. Depending on what the log function does (i.e. if it changes the values) and other applications use the values, they will receive wrong values and this will become a problem. To avoid this, line 15/22 should clone the values with: \lstinline{event.values.clone()}.
+
+\end{enumerate}
+
+\item (Activity lifecycle)
+
+Resumed, Paused and Stopped. The corresponding callback functions are:
+\lstinline{void onResume()}, \lstinline{void onPause()}, \lstinline{void onStop()}.
+
+\item (Resources)
+
+Strings should be defined in \lstinline{res/values/strings.xml}. The advantage of this approach is that a string can be reused many times and when there is the need to change this string, it can be changed once \lstinline{strings.xml} and take effect everywhere the string is used. Also, all strings are in one place so it's easy to find a specific string.
+
+\item (Intents)
+
+Explicit intents explicitly state the class of the component to be run. In the following code snippet, TargetActivity will be run, although not only components of type Activity can be run but also components of type Service and BroadcastReceiver.
+
+\begin{lstlisting}
+Intent intent = new Intent(this, TargetActivity.class);
+startActivity(intent);
+\end{lstlisting}
+
+Explicit intents can also be used to pass data from one component to the target component using method \lstinline{intent.putExtra()}. That data can be retrieved in the target component using \lstinline{getIntent().getExtras()}.
+
+Implicit intents on the other hand do not specify the appropriate component explicitly but instead an appropriate target component is determined based on the intent information supplied in the \lstinline{AndroidManifest.xml} file (action, type, scheme, categories).
+
+\item (Service lifecycle)
+
+\begin{enumerate}[a)]
+\item False
+\item True
+\item True
+\item False
+
+\end{enumerate}
+
+\item (AndroidManifest file)
+
+Inside the \lstinline{<application>} tag, register the LocationService class:
+\begin{lstlisting}
+<service android:name=".LocationService"></service>
+\end{lstlisting}
+
+Outside of the \lstinline{<application>} tag:
+\begin{lstlisting}
+<uses-permission android:name="android.permission.SEND_SMS" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+\end{lstlisting}
+
+\end{enumerate}
+
+\end{document}
