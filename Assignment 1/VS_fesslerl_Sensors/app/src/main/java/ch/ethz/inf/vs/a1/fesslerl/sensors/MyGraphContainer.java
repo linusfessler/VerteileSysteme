@@ -27,7 +27,7 @@ public class MyGraphContainer implements GraphContainer {
 
     public MyGraphContainer(GraphView graph, String unit, int numVals){
         this.graph = graph;
-        //graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setXAxisBoundsManual(true);
         graph.getGridLabelRenderer().setHorizontalAxisTitle("s");
         graph.getGridLabelRenderer().setVerticalAxisTitle(unit);
         for(int i = 0; i < numVals; ++i) {
@@ -46,8 +46,8 @@ public class MyGraphContainer implements GraphContainer {
                 vals.removeFirst();
             vals.addLast(values);
 
-            //graph.getViewport().setMaxX(xIndex);
-            //graph.getViewport().setMinX(series.get(0).getLowestValueX());
+            graph.getViewport().setMaxX(xIndex);
+            graph.getViewport().setMinX(series.get(0).getLowestValueX());
             for (int i = 0; i < values.length; i++)
                 series.get(i).appendData(new DataPoint(xIndex, values[i]), true, MAX_DATA_POINTS);
 
