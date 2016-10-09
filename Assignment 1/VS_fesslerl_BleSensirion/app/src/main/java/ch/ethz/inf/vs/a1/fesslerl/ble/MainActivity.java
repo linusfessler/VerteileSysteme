@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         deviceNames = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, deviceNames);
 
-        scanner = btAdapter.getBluetoothLeScanner();
 
         scanCallback = new ScanCallback() {
             @Override
@@ -158,6 +157,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     private void scanForDevices(){
         Log.d(LOG_LOC, "### Scanning for Bluetooth devices ###");
+
+
+        scanner = btAdapter.getBluetoothLeScanner();
 
 
         List<ScanFilter> scanFilters= new ArrayList<>();
