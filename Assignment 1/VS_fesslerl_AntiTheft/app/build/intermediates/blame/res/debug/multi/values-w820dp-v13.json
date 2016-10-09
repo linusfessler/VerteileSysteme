@@ -1,6 +1,6 @@
 [
     {
-        "outputFile": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-w820dp-v13\\values-w820dp-v13.xml",
+        "outputFile": "/home/johannes/AndroidStudioProjects/VerteilteSysteme/Assignment 1/VS_fesslerl_AntiTheft/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-w820dp-v13/values-w820dp-v13.xml",
         "map": [
             {
                 "to": {
@@ -11,37 +11,13 @@
                     "endOffset": 108
                 },
                 "from": {
-                    "file": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\src\\main\\res\\values-w820dp\\dimens.xml",
+                    "file": "/home/johannes/AndroidStudioProjects/VerteilteSysteme/Assignment 1/VS_fesslerl_AntiTheft/app/src/main/res/values-w820dp/dimens.xml",
                     "position": {
                         "startLine": 4,
                         "startColumn": 4,
-                        "startOffset": 295,
+                        "startOffset": 291,
                         "endColumn": 57,
-                        "endOffset": 348
-                    }
-                }
-            }
-        ]
-    },
-    {
-        "outputFile": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-w820dp-v13\\values-w820dp-v13.xml",
-        "map": [
-            {
-                "to": {
-                    "startLine": 2,
-                    "startColumn": 4,
-                    "startOffset": 55,
-                    "endColumn": 57,
-                    "endOffset": 108
-                },
-                "from": {
-                    "file": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\src\\main\\res\\values-w820dp\\dimens.xml",
-                    "position": {
-                        "startLine": 4,
-                        "startColumn": 4,
-                        "startOffset": 295,
-                        "endColumn": 57,
-                        "endOffset": 348
+                        "endOffset": 344
                     }
                 }
             }

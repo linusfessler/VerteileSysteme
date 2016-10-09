@@ -1,10 +1,6 @@
 [
     {
-        "merged": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi\\ic_launcher.png",
-        "source": "F:\\Libraries\\Dokumente\\Android Studio\\VerteilteSysteme\\Assignment 1\\VS_fesslerl_AntiTheft\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher.png"
-    },
-    {
-        "merged": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi\\ic_launcher.png",
-        "source": "C:\\Users\\linus\\AndroidStudioProjects\\VerteilteSysteme\\VS_fesslerl_AntiTheft\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher.png"
+        "merged": "/home/johannes/AndroidStudioProjects/VerteilteSysteme/Assignment 1/VS_fesslerl_AntiTheft/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi/ic_launcher.png",
+        "source": "/home/johannes/AndroidStudioProjects/VerteilteSysteme/Assignment 1/VS_fesslerl_AntiTheft/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
     }
 ]
