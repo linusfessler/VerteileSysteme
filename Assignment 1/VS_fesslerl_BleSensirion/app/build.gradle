@@ -4,7 +4,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
     defaultConfig {
-        applicationId "ch.ethz.inf.vs.a1.fesslerl.ble.vs_fesslerl_blesensirion"
+        applicationId "ch.ethz.inf.vs.a1.fesslerl.ble"
         minSdkVersion 21
         targetSdkVersion 24
         versionCode 1
