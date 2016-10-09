@@ -24,6 +24,7 @@ public class MyGraphContainer implements GraphContainer {
     private Deque<float[]> vals = new ArrayDeque<>();
     private List<LineGraphSeries<DataPoint>> series = new ArrayList<>();
     private double oldVal = 0.0;
+    private int numSeries = -1;
 
     public MyGraphContainer(GraphView graph, String unit, int numVals){
         this.graph = graph;
@@ -40,8 +41,13 @@ public class MyGraphContainer implements GraphContainer {
     }
 
     @Override
-    public void addValues(double xIndex, float[] values) {
-        if(xIndex > oldVal) { // this is necessary because during testing it sometimes happened, that apparantly the new x-value was not greater than the old one. this leads to an error when appending data.
+    public void addValues(double xIndex, float[] values) throws  IllegalArgumentException {
+        if (numSeries == -1)
+            numSeries = values.length;
+        else if (numSeries != values.length)
+            throw new IllegalArgumentException();
+
+        if (xIndex > oldVal) { // this is necessary because during testing it sometimes happened, that apparently the new x-value was not greater than the old one. this leads to an error when appending data.
             while (vals.size() >= MAX_DATA_POINTS)
                 vals.removeFirst();
             vals.addLast(values);
