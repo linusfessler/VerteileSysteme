@@ -3,4 +3,6 @@
     <string name="ask_select">Choose a bluetooth device</string>
     <string name="device_connected">Connected to device.</string>
     <string name="device_not_connected">Not connected to device.</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>
