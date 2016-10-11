@@ -100,9 +100,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         Log.d(LOG_LOC, "### btAdapter created ###");
 
-        // This funciton is only called for testing and debugging in the emulator (No Bluetooth available in the emulator)
-        // TODO: Delete this function call.
-        getLocationPermissionThenScan();
+
 
         // Check if Bluetooth is available (!=null) and enabled (isEnabled())
         if(btAdapter != null){

@@ -3,6 +3,7 @@
     <string name="ask_select">Choose a bluetooth device</string>
     <string name="device_connected">Connected to device.</string>
     <string name="device_not_connected">Not connected to device.</string>
+    <string name="dialog_request_location_sevices">Location servide is not activated. Do you want to activate it now?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
 </resources>
