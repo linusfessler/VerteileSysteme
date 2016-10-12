@@ -10,12 +10,16 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -96,6 +100,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         Log.d(LOG_LOC, "### btAdapter created ###");
 
+
+
         // Check if Bluetooth is available (!=null) and enabled (isEnabled())
         if(btAdapter != null){
             // Bluetooth is available
@@ -107,7 +113,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 startActivityForResult(intent, REQUEST_ENABLE_BT);
                 // Bluetooth enabled and ready
                 // Scan for Bluetooth devices
-
             }
             else{
                 Log.d(LOG_LOC, "### Bluetooth already enabled ###");
@@ -141,7 +146,54 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     private void activateLocationThenScan(){
-        //TODO: Activate Location Services (step 4 in the pdf "You have to request the user to activate the location services")
+        //TODO: Check if this method works in normal program flow
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        boolean locationEnabled = false;
+
+        // Check if location service is enabled.
+        // TODO: Look at alternative Implementation using Settings.Secure.LOCATION_MODE
+        try{
+            // isProviderEnabled returns true if Location service is enabled, false if it is not. Can throw IllegalArgumentException
+            locationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        }catch(IllegalArgumentException ex){
+            // TODO: Implement proper exception handling
+            Log.d(LOG_LOC, "IllegalArgumentException thrown when trying to check if location services are enabled.");
+        }
+
+        // Ask for enabling of Location services only if they are not enabled yet.
+        if(!locationEnabled){
+            // Create Dialog Box asking the user to enable Location Services in settings.
+            // Pressing "YES" will open the settings app
+            Log.d(LOG_LOC, "Location services not enabled.");
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage(R.string.dialog_request_location_sevices);
+            dialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(settingsIntent);
+                    Log.d(LOG_LOC, "Button " + (which) + " pressed. (YES)");
+                }
+            });
+            dialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // TODO: Implement negative action
+                    Log.d(LOG_LOC, "Button " + (which) + " pressed. (NO)");
+
+                }
+            });
+
+            // TODO: Check why dialog is not shown. (???)
+            // Build and show dialog.
+            dialog.show();
+
+        }
+        else{
+            Log.d(LOG_LOC, "Location services already enabled");
+        }
+
+
         scanForDevices();
     }
 
