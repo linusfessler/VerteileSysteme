@@ -13,6 +13,8 @@ import android.util.Log;
 import android.widget.TextView;
 
 
+import com.jjoe64.graphview.GraphView;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import static ch.ethz.inf.vs.a1.fesslerl.ble.SensirionSHT31UUIDS.*;
@@ -26,12 +28,22 @@ public class ConnectedActivity extends AppCompatActivity {
 
     BluetoothGatt gatt;
 
+    GraphView graphTemp;
+    GraphView graphHum;
+    LiveGraphManager gm;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connected);
 
         device = getIntent().getParcelableExtra(BleGlobalConsts.DEVICE_KEY);
+
+        // Initialize GraphViews
+        graphTemp = (GraphView) findViewById(R.id.graph_temperature);
+        graphHum  = (GraphView) findViewById(R.id.graph_humidity);
+        gm = new LiveGraphManager(graphTemp, graphHum);
     }
 
     @Override
@@ -134,6 +146,7 @@ public class ConnectedActivity extends AppCompatActivity {
             public void run() {
                 TextView temp = (TextView) findViewById(R.id.textTemp);
                 temp.setText("Temperature: " + val);
+                gm.updateTemperatureGraph(val);
             }
         });
     }
@@ -144,7 +157,8 @@ public class ConnectedActivity extends AppCompatActivity {
             @Override
             public void run() {
                 TextView hum = (TextView) findViewById(R.id.textHum);
-                hum.setText("Humidity: "+ val);
+                //hum.setText("Humidity: "+ val);
+                //gm.updateHumidityGraph(val);
             }
         });
     }

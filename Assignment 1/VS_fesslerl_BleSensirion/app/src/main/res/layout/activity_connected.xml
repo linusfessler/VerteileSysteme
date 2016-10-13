@@ -4,7 +4,7 @@
     android:id="@+id/activity_connected"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context="ch.ethz.inf.vs.a1.fesslerl.ble.ConnectedActivity">
 
     <TextView
@@ -24,4 +24,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textHum" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+                <com.jjoe64.graphview.GraphView
+            android:id="@+id/graph_temperature"
+            android:layout_width="match_parent"
+            android:layout_height="200dip" />
+
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graph_humidity"
+                android:layout_width="match_parent"
+                android:layout_height="200dip" />
+            </LinearLayout></ScrollView>
+
+
+
 </LinearLayout>
