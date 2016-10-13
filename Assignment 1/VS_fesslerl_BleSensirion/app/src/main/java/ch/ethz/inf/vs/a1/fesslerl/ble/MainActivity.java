@@ -101,32 +101,36 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         });
 
         Log.d(LOG_LOC, "### btAdapter created ###");
+    }
 
-
-
+    @Override
+    protected void onResume() {
+        super.onResume();
         // Check if Bluetooth is available (!=null) and enabled (isEnabled())
-        if(btAdapter != null){
+        if (btAdapter != null) {
             // Bluetooth is available
             Log.d(LOG_LOC, "### Bluetooth is available ###");
-            if(!btAdapter.isEnabled()){
+            if (!btAdapter.isEnabled()) {
                 // Bluetooth is not enabled. Ask user for permission
                 Log.d(LOG_LOC, "### Bluetooth is not enabled ###");
                 Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(intent, REQUEST_ENABLE_BT);
                 // Bluetooth enabled and ready
                 // Scan for Bluetooth devices
-            }
-            else{
+            } else {
                 Log.d(LOG_LOC, "### Bluetooth already enabled ###");
                 getLocationPermissionThenScan();
             }
-        }
-        else{
+        } else {
             failed("Bluetooth not available.");
         }
     }
 
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopScan();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
