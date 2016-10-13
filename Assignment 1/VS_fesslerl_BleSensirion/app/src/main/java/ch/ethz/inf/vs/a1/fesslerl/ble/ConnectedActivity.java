@@ -40,7 +40,7 @@ public class ConnectedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connected);
 
-        //device = getIntent().getParcelableExtra(BleGlobalConsts.DEVICE_KEY);
+        device = getIntent().getParcelableExtra(BleGlobalConsts.DEVICE_KEY);
 
         // Initialize GraphViews
         graphTemp = (GraphView) findViewById(R.id.graph_temperature);
