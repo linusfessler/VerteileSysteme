@@ -24,11 +24,10 @@ public class TestValueGenerator implements Runnable {
 
     @Override
     public void run(){
-
         Log.d(LOG_LOC, "### TestValueGenerator running");
 
         for(int i = 0; i < max; i++){
-            caller.addTestValue(ThreadLocalRandom.current().nextDouble(-273.15, 1000), ThreadLocalRandom.current().nextDouble(0, 100));
+            caller.addTestValues(ThreadLocalRandom.current().nextDouble(-273.15, 1000), ThreadLocalRandom.current().nextDouble(0, 100));
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
