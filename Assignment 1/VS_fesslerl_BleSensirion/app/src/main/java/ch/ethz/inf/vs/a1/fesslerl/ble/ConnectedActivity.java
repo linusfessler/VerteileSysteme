@@ -151,7 +151,7 @@ public class ConnectedActivity extends AppCompatActivity {
     }
 
     // For testing
-    public void addTestValue(final double tempVal, final double humVal) {
+    public void addTestValues(final double tempVal, final double humVal) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
