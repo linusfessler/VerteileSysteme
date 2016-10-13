@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.9.5)  7 OCT 2016 15:06
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.9.5)  13 OCT 2016 19:02
 entering extended mode
 **answers.tex
 
@@ -405,26 +405,26 @@ LaTeX Font Info:    External font `cmex10' loaded for size
  [1
 
 {C:/Users/linus/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
-[2]
+[2] [3]
 ("F:\Libraries\Dokumente\Android Studio\VerteilteSysteme\Assignment 1\answers\a
 nswers.aux") ) 
 Here is how much of TeX's memory you used:
- 3495 strings out of 493921
- 46311 string characters out of 3146481
+ 3500 strings out of 493921
+ 46410 string characters out of 3146481
  156445 words of memory out of 3000000
- 6788 multiletter control sequences out of 15000+200000
+ 6793 multiletter control sequences out of 15000+200000
  7748 words of font info for 28 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 26i,6n,40p,523b,1363s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 26i,6n,40p,708b,1678s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files (x86)/MiKTeX/fonts/type1/public/amsfonts/cm/cmb
 x12.pfb><C:/Program Files (x86)/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb
 ><C:/Program Files (x86)/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Pr
 ogram Files (x86)/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program F
 iles (x86)/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files (x8
 6)/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on answers.pdf (2 pages, 87077 bytes).
+Output written on answers.pdf (3 pages, 88625 bytes).
 PDF statistics:
- 33 PDF objects out of 1000 (max. 8388607)
+ 36 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
