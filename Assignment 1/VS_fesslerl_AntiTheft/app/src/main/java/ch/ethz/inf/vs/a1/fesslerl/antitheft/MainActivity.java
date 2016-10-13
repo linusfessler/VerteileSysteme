@@ -13,6 +13,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
+/*
+ * Icon sources
+ * https://www.iconfinder.com/icons/314692/lock_icon#size=128
+ * https://www.iconfinder.com/icons/1054943/lock_unlocked_icon#size=512
+ * https://www.iconfinder.com/icons/1055033/lock_locked_secure_icon#size=512
+ */
+
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private final int PERMISSION_REQUEST_CODE = 1;

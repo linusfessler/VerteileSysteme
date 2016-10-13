@@ -12,5 +12,6 @@
 
     <string name="message_started">Anti Theft Service started</string>
     <string name="message_stopped">Anti Theft Service stopped</string>
-    <string name="message_on_preference_changed">Changes will take effect when service is restarted</string>
+    <string name="message_on_preference_changed">Changes applied</string>
+    <string name="message_on_preference_not_changed">Changes will be applied when service is restarted</string>
 </resources>

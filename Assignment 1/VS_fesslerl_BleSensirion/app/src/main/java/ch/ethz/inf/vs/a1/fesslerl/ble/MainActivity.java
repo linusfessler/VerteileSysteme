@@ -50,6 +50,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // For testing
+        Intent startDeviceActivity = new Intent(MainActivity.this, ConnectedActivity.class);
+        startActivity(startDeviceActivity);
+
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         btAdapter = bluetoothManager.getAdapter();
         handler = new Handler();
@@ -58,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         deviceNames = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, deviceNames);
-
 
         scanCallback = new ScanCallback() {
             @Override
@@ -81,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 failed("scan failed");
 
             }
-
         };
 
         ListView lv_devices = (ListView) findViewById(R.id.bt_device_list);
