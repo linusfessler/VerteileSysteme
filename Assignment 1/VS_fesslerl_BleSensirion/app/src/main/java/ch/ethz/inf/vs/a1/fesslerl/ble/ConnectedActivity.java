@@ -86,9 +86,12 @@ public class ConnectedActivity extends AppCompatActivity {
                 Log.d("###connected", "discovered services.");
                 humidityService = gatt.getService(UUID_HUMIDITY_SERVICE);
                 temperatureService = gatt.getService(UUID_TEMPERATURE_SERVICE);
-                //TODO: Works without step 10. (Overriding characteristics). Should we still implement it?
-                //BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(UUID_HUMIDITY_CHARACTERISTIC,BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_NOTIFY, BluetoothGattCharacteristic.PERMISSION_WRITE | BluetoothGattCharacteristic.PERMISSION_READ );
-                //humidityService.addCharacteristic(characteristic);
+                //Override Characteristics to activte them.
+                BluetoothGattCharacteristic humCharacteristic = new BluetoothGattCharacteristic(UUID_HUMIDITY_CHARACTERISTIC,BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_NOTIFY | BluetoothGattCharacteristic.PROPERTY_WRITE, BluetoothGattCharacteristic.PERMISSION_WRITE | BluetoothGattCharacteristic.PERMISSION_READ );
+                humidityService.addCharacteristic(humCharacteristic);
+                BluetoothGattCharacteristic tempCharacteristic = new BluetoothGattCharacteristic(UUID_TEMPERATURE_CHARACTERISTIC,BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_NOTIFY, BluetoothGattCharacteristic.PERMISSION_WRITE | BluetoothGattCharacteristic.PERMISSION_READ );
+                temperatureService.addCharacteristic(tempCharacteristic);
+
                 setNotificationDescriptor(humidityService.getCharacteristic(UUID_HUMIDITY_CHARACTERISTIC));
 
             }
@@ -97,12 +100,20 @@ public class ConnectedActivity extends AppCompatActivity {
             @Override
             public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
                 super.onCharacteristicChanged(gatt, characteristic);
-                //TODO: Use Graph to show values. (Step 14).
-                float val = convertRawValue(characteristic.getValue());
-                if(characteristic.getUuid().equals(UUID_HUMIDITY_CHARACTERISTIC)){
-                    gm.updateTempGraph(val, textTemp);
-                }else{
-                    gm.updateTempGraph(val, textHum);
+                final float val = convertRawValue(characteristic.getValue());
+                if(!characteristic.getUuid().equals(UUID_HUMIDITY_CHARACTERISTIC)){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            gm.updateTempGraph(val, (TextView) findViewById(R.id.textTemp));
+                        }
+                    });
+                }else{runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        gm.updateHumGraph(val, (TextView) findViewById(R.id.textHum));
+                    }
+                });
                 }
                 //Log.d("###connected:", (characteristic.getUuid().equals(UUID_HUMIDITY_CHARACTERISTIC) ? "Humidity: " : "Temp: ") + convertRawValue(characteristic.getValue()));
             }
@@ -110,8 +121,9 @@ public class ConnectedActivity extends AppCompatActivity {
             @Override
             public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
                 super.onDescriptorWrite(gatt, descriptor, status);
-                if(descriptor.getCharacteristic().getUuid().equals(UUID_HUMIDITY_CHARACTERISTIC))
+                if(descriptor.getCharacteristic().getUuid().equals(UUID_HUMIDITY_CHARACTERISTIC)){
                     setNotificationDescriptor(temperatureService.getCharacteristic(UUID_TEMPERATURE_CHARACTERISTIC));
+                }
             }
         });
     }
@@ -146,7 +158,7 @@ public class ConnectedActivity extends AppCompatActivity {
             }
         });
     }
-
+/*
     // For testing
     public void addTestValues(final double tempVal, final double humVal) {
         runOnUiThread(new Runnable() {
@@ -157,6 +169,7 @@ public class ConnectedActivity extends AppCompatActivity {
             }
         });
     }
+*/
 }
 
 
