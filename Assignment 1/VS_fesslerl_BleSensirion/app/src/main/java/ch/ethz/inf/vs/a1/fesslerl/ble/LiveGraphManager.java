@@ -5,6 +5,7 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import java.util.Calendar;
 
@@ -31,7 +32,7 @@ public class LiveGraphManager {
 
         // Initialize Calendar for updating values easily
         calendar = Calendar.getInstance();
-//        startTime = calendar.getTimeInMillis();
+        startTime = calendar.getTimeInMillis();
 
         initTemperatureGraph();
         initHumidityGraph();
@@ -39,6 +40,8 @@ public class LiveGraphManager {
 
     // TODO: finish this init function
     private void initTemperatureGraph(){
+        //needed for "scroll to end"
+        graphTemp.getViewport().setXAxisBoundsManual(true);
 
         // Set axis titles
         graphTemp.getGridLabelRenderer().setVerticalAxisTitle("C");
@@ -49,16 +52,25 @@ public class LiveGraphManager {
         lgSeriesTemperature.setThickness(6);
         lgSeriesTemperature.setColor(Color.RED);
 
+
+        graphTemp.getViewport().setMinX(0);
+
+
+
         graphTemp.addSeries(lgSeriesTemperature);
     }
 
     private void initHumidityGraph(){
+
+
 
         // Humidity can only be between 0 and 100%
         // TODO: Check if bounds are correct. (Does the sensor get values between 0 and 1 or 0 and 100, etc.?
         graphHum.getViewport().setYAxisBoundsManual(true);
         graphHum.getViewport().setMinY(0.0);
         graphHum.getViewport().setMaxY(100.0);
+
+
 
         // Set axis titles
         graphHum.getGridLabelRenderer().setVerticalAxisTitle("%");
@@ -73,18 +85,21 @@ public class LiveGraphManager {
     }
 
     // TODO: finish this update function
-    private void updateTemperatureGraph(double val){
+    public void updateTemperatureGraph(double val){
 //        lgSeriesTemperature.appendData(new DataPoint(calendar.getTimeInMillis() - startTime, val), true, MAX_DATA_POINTS_TEMP);
-
+        double time = (Calendar.getInstance().getTimeInMillis()- startTime)/1000.;
+        if(!lgSeriesTemperature.isEmpty())
+            graphTemp.getViewport().setMinX(lgSeriesTemperature.getLowestValueX());
+        graphTemp.getViewport().setMaxX(time);
         // According to the documentation, DataPoint can handle Date Objects.
-        lgSeriesTemperature.appendData(new DataPoint(calendar.getTime(), val), true, MAX_DATA_POINTS_TEMP);
+        lgSeriesTemperature.appendData(new DataPoint(time, val), true, MAX_DATA_POINTS_TEMP);
     }
 
-    private void updateHumidityGraph(double val){
+    public void updateHumidityGraph(double val){
 //        lgSeriesHumidity.appendData(new DataPoint(calendar.getTimeInMillis() - startTime, val), true, MAX_DATA_POINTS_HUM);
 
         // Accordig to the documentation, DataPoint can handle Date Objects.
-        lgSeriesHumidity.appendData(new DataPoint(calendar.getTime(), val), true, MAX_DATA_POINTS_HUM);
+        //lgSeriesHumidity.appendData(new DataPoint(calendar.getTime(), val), true, MAX_DATA_POINTS_HUM);
     }
 
 }

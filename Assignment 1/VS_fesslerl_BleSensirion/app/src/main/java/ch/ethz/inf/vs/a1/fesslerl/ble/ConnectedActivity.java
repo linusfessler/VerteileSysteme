@@ -43,6 +43,7 @@ public class ConnectedActivity extends AppCompatActivity {
         // Initialize GraphViews
         graphTemp = (GraphView) findViewById(R.id.graph_temperature);
         graphHum  = (GraphView) findViewById(R.id.graph_humidity);
+        gm = new LiveGraphManager(graphTemp, graphHum);
     }
 
     @Override
@@ -145,6 +146,7 @@ public class ConnectedActivity extends AppCompatActivity {
             public void run() {
                 TextView temp = (TextView) findViewById(R.id.textTemp);
                 temp.setText("Temperature: " + val);
+                gm.updateTemperatureGraph(val);
             }
         });
     }
@@ -155,7 +157,8 @@ public class ConnectedActivity extends AppCompatActivity {
             @Override
             public void run() {
                 TextView hum = (TextView) findViewById(R.id.textHum);
-                hum.setText("Humidity: "+ val);
+                //hum.setText("Humidity: "+ val);
+                //gm.updateHumidityGraph(val);
             }
         });
     }
