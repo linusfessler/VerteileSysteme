@@ -103,7 +103,6 @@ public class ConnectedActivity extends AppCompatActivity {
             @Override
             public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
                 super.onCharacteristicChanged(gatt, characteristic);
-                //TODO: Use Graph to show values. (Step 14).
                 final float val = convertRawValue(characteristic.getValue());
                 if(!characteristic.getUuid().equals(UUID_HUMIDITY_CHARACTERISTIC)){
                     runOnUiThread(new Runnable() {
