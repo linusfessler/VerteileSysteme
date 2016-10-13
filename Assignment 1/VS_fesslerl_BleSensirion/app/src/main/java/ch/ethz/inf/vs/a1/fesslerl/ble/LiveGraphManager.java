@@ -23,12 +23,10 @@ public class LiveGraphManager {
     private final String UNIT_TEMP = "°C";
     private final String UNIT_HUM = "%";
 
-
     private GraphView graphTemp;
     private GraphView graphHum;
     private LineGraphSeries<DataPoint> seriesTemp;
     private LineGraphSeries<DataPoint> seriesHum;
-    private Calendar calendar;
     private long startTime;
 
     LiveGraphManager(GraphView graphTemp, GraphView graphHum){
@@ -37,21 +35,18 @@ public class LiveGraphManager {
         this.graphHum = graphHum;
 
         // Initialize Calendar for updating values easily
-        calendar = Calendar.getInstance();
-        startTime = calendar.getTimeInMillis();
+        startTime = Calendar.getInstance().getTimeInMillis();
 
         initTempGraph();
         initHumGraph();
     }
 
-    // TODO: finish this init function
     private void initTempGraph(){
         seriesTemp = new LineGraphSeries<>();
         initGraph(graphTemp, seriesTemp, UNIT_TEMP, Color.BLUE);
     }
 
     private void initHumGraph(){
-        // TODO: Check if bounds are correct. (Does the sensor get values between 0 and 1 or 0 and 100, etc.?
         // Humidity can only be between 0 and 100%
         graphHum.getViewport().setYAxisBoundsManual(true);
         graphHum.getViewport().setMinY(0.0);

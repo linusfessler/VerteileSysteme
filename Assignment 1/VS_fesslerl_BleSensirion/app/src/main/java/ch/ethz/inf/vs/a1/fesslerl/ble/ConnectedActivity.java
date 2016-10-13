@@ -50,11 +50,8 @@ public class ConnectedActivity extends AppCompatActivity {
         textTemp = (TextView) findViewById(R.id.textTemp);
         textHum = (TextView) findViewById(R.id.textHum);
 
-        gm.updateTempGraph(0, textTemp);
-        gm.updateTempGraph(0, textHum);
-
         // For testing
-        //new Thread(new TestValueGenerator(100, this)).start();
+        // new Thread(new TestValueGenerator(100, this)).start();
     }
 
     @Override

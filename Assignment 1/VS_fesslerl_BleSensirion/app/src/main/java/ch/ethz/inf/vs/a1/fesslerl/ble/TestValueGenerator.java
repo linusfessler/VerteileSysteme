@@ -10,14 +10,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class TestValueGenerator implements Runnable {
 
-    int max;
     ConnectedActivity caller;
 
     private final String LOG_LOC = "TestValueGenerator";
 
 
-    TestValueGenerator(int max, ConnectedActivity cl){
-        this.max = max;
+    TestValueGenerator(ConnectedActivity cl){
         caller = cl;
         Log.d(LOG_LOC, "### TestValueGenerator initialized");
     }
@@ -26,10 +24,10 @@ public class TestValueGenerator implements Runnable {
     public void run(){
         Log.d(LOG_LOC, "### TestValueGenerator running");
 
-        for(int i = 0; i < max; i++){
+        while (true) {
             caller.addTestValues(ThreadLocalRandom.current().nextDouble(-273.15, 1000), ThreadLocalRandom.current().nextDouble(0, 100));
             try {
-                Thread.sleep(500);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
