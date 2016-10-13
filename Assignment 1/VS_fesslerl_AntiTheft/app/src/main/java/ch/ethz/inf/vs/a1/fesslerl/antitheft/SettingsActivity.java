@@ -84,8 +84,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 preference.setSummary(stringValue);
             }
 
-            if (AntiTheftService.isEnabled)
-                AntiTheftService.showToast(getApplicationContext(), getString(R.string.message_on_preference_changed));
+            AntiTheftService.showToast(getApplicationContext(), getString(AntiTheftService.isEnabled ?
+                    R.string.message_on_preference_not_changed : R.string.message_on_preference_changed));
 
             return true;
         }

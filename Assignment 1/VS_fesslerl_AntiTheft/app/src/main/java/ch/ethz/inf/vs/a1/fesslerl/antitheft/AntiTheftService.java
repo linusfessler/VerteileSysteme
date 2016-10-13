@@ -122,7 +122,7 @@ public class AntiTheftService extends Service implements AlarmCallback {
         mWakeLock.acquire();
 
         // Show toast
-        showToast(this, getString(R.string.message_stopped));
+        showToast(this, getString(R.string.message_started));
 
         return Service.START_STICKY;
     }
@@ -155,7 +155,7 @@ public class AntiTheftService extends Service implements AlarmCallback {
         mHandler.removeCallbacks(mRunnable);
 
         // Show toast
-        showToast(this, getString(R.string.message_started));
+        showToast(this, getString(R.string.message_stopped));
     }
 
     @Override

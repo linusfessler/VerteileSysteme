@@ -2835,15 +2835,16 @@ containing a value of this type.
         public static final int character_counter_pattern=0x7f070025;
         public static final int delay=0x7f070026;
         public static final int message_on_preference_changed=0x7f070027;
-        public static final int message_started=0x7f070028;
-        public static final int message_stopped=0x7f070029;
+        public static final int message_on_preference_not_changed=0x7f070028;
+        public static final int message_started=0x7f070029;
+        public static final int message_stopped=0x7f07002a;
         public static final int search_menu_title=0x7f070013;
-        public static final int sensitivity=0x7f07002a;
-        public static final int sensor2=0x7f07002b;
+        public static final int sensitivity=0x7f07002b;
+        public static final int sensor2=0x7f07002c;
         public static final int status_bar_notification_info_overflow=0x7f070014;
-        public static final int text_notification=0x7f07002c;
-        public static final int title_activity_settings=0x7f07002d;
-        public static final int title_notification=0x7f07002e;
+        public static final int text_notification=0x7f07002d;
+        public static final int title_activity_settings=0x7f07002e;
+        public static final int title_notification=0x7f07002f;
     }
     public static final class style {
         public static final int AlertDialog_AppCompat=0x7f09008d;
