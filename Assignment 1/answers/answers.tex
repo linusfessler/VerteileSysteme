@@ -73,7 +73,7 @@ float valueRange = sensor.getMaximumRange();
 \item Retrieve the value range of a specific sensor
 \begin{lstlisting}
 SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER:
+Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 // to register
 sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST);
 // and to unregister
@@ -83,7 +83,7 @@ sensorManager.unregisterListener(this);
 \end{enumerate}
 
 \item
-The mistake is in line 15/22 where event.values are not copied. This is a mistake since the application doesn't own the event and thus shouldn't change it's values as they might be used again by other applications. Depending on what the log function does (i.e. if it changes the values) and other applications use the values, they will receive wrong values and this will become a problem. To avoid this, line 15/22 should clone the values with: \lstinline{event.values.clone()}.
+The mistake is in lines 15/22 where event.values are not copied. This is a mistake since the application doesn't own the event and thus shouldn't change it's values as they might be used again by other applications. Depending on if the log method or any other method in the class \lstinline{SensorValuesDetector} changes the values in \lstinline{accelerometerValues} or \lstinline{proximityValues} and other applications use the values, they will receive wrong values and this will become a problem. To avoid this, lines 15/22 should clone the values with: \lstinline{event.values.clone()}.
 
 \end{enumerate}
 
@@ -94,7 +94,7 @@ Resumed, Paused and Stopped. The corresponding callback functions are:
 
 \item (Resources)
 
-Strings should be defined in \lstinline{res/values/strings.xml}. The advantage of this approach is that a string can be reused many times and when there is the need to change this string, it can be changed once \lstinline{strings.xml} and take effect everywhere the string is used. Also, all strings are in one place so it's easy to find a specific string.
+Strings should be defined in \lstinline{res/values/strings.xml}. The advantage of this approach is that a string can be reused many times and when there is the need to change this string, it can be changed once in \lstinline{strings.xml} and take effect everywhere the string is used. Also, all strings are in one place so it's easy to find a specific string.
 
 \item (Intents)
 
@@ -107,7 +107,7 @@ startActivity(intent);
 
 Explicit intents can also be used to pass data from one component to the target component using method \lstinline{intent.putExtra()}. That data can be retrieved in the target component using \lstinline{getIntent().getExtras()}.
 
-Implicit intents on the other hand do not specify the appropriate component explicitly but instead an appropriate target component is determined based on the intent information supplied in the \lstinline{AndroidManifest.xml} file (action, type, scheme, categories).
+Implicit intents on the other hand do not specify the target component explicitly but instead an appropriate target component is determined based on the intent information supplied in the \lstinline{AndroidManifest.xml} file (action, type, scheme, categories).
 
 \item (Service lifecycle)
 
@@ -126,10 +126,11 @@ Inside the \lstinline{<application>} tag, register the LocationService class:
 <service android:name=".LocationService"></service>
 \end{lstlisting}
 
-Outside of the \lstinline{<application>} tag:
+Outside of the \lstinline{<application>} tag, register permissions to send an sms (only needed if the text message is sent over SMS) and to access fine location and register feature to use GPS:
 \begin{lstlisting}
 <uses-permission android:name="android.permission.SEND_SMS" />
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-feature android:name="android.hardware.location.gps" />
 \end{lstlisting}
 
 \end{enumerate}

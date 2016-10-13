@@ -81,7 +81,11 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         }
         TextView txtVals = (TextView) findViewById(R.id.text_sensor_values);
         txtVals.setText(sb.toString());
-        getGraphContainer().addValues((Calendar.getInstance().getTime().getTime() - startTime)/1000.,vals);
+        try {
+            getGraphContainer().addValues((Calendar.getInstance().getTime().getTime() - startTime) / 1000., vals);
+        } catch (IllegalArgumentException e) {
+            System.err.println("IllegalArgumentException: " + e.getMessage());
+        }
     }
 
     @Override
