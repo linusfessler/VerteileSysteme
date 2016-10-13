@@ -32,25 +32,36 @@ public class ConnectedActivity extends AppCompatActivity {
     GraphView graphHum;
     LiveGraphManager gm;
 
+    TextView textTemp;
+    TextView textHum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connected);
 
-        device = getIntent().getParcelableExtra(BleGlobalConsts.DEVICE_KEY);
+        //device = getIntent().getParcelableExtra(BleGlobalConsts.DEVICE_KEY);
 
         // Initialize GraphViews
         graphTemp = (GraphView) findViewById(R.id.graph_temperature);
         graphHum  = (GraphView) findViewById(R.id.graph_humidity);
         gm = new LiveGraphManager(graphTemp, graphHum);
+
+        textTemp = (TextView) findViewById(R.id.textTemp);
+        textHum = (TextView) findViewById(R.id.textHum);
+
+        gm.updateTempGraph(0, textTemp);
+        gm.updateTempGraph(0, textHum);
+
+        // For testing
+        new Thread(new TestValueGenerator(100, this)).start();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         setViewConnectionState(false);
-        connectToDevice();
+        //connectToDevice();
     }
 
     private void connectToDevice(){
@@ -92,9 +103,9 @@ public class ConnectedActivity extends AppCompatActivity {
                 //TODO: Use Graph to show values. (Step 14).
                 float val = convertRawValue(characteristic.getValue());
                 if(characteristic.getUuid().equals(UUID_HUMIDITY_CHARACTERISTIC)){
-                    setHumView(val);
+                    gm.updateTempGraph(val, textTemp);
                 }else{
-                    setTempView(val);
+                    gm.updateTempGraph(val, textHum);
                 }
                 //Log.d("###connected:", (characteristic.getUuid().equals(UUID_HUMIDITY_CHARACTERISTIC) ? "Humidity: " : "Temp: ") + convertRawValue(characteristic.getValue()));
             }
@@ -121,7 +132,7 @@ public class ConnectedActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        closeConnection();
+        //closeConnection();
     }
 
     private void closeConnection(){
@@ -139,26 +150,13 @@ public class ConnectedActivity extends AppCompatActivity {
         });
     }
 
-    //TODO: Remove this helper method
-    private void setTempView(final float val){
+    // For testing
+    public void addTestValue(final double tempVal, final double humVal) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                TextView temp = (TextView) findViewById(R.id.textTemp);
-                temp.setText("Temperature: " + val);
-                gm.updateTemperatureGraph(val);
-            }
-        });
-    }
-
-    //TODO: Remove this method.
-    private void setHumView(final float val){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                TextView hum = (TextView) findViewById(R.id.textHum);
-                //hum.setText("Humidity: "+ val);
-                //gm.updateHumidityGraph(val);
+                gm.updateTempGraph(tempVal, textTemp);
+                gm.updateHumGraph(humVal, textHum);
             }
         });
     }
