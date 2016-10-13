@@ -70,7 +70,7 @@ Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_*); // where * can be
 float valueRange = sensor.getMaximumRange();
 \end{lstlisting}
 
-\item Retrieve the value range of a specific sensor
+\item Register for monitoring \lstinline{accelerometer} sensor changes at the maximum available rate
 \begin{lstlisting}
 SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -83,7 +83,9 @@ sensorManager.unregisterListener(this);
 \end{enumerate}
 
 \item
-The mistake is in lines 15/22 where event.values are not copied. This is a mistake since the application doesn't own the event and thus shouldn't change it's values as they might be used again by other applications. Depending on if the log method or any other method in the class \lstinline{SensorValuesDetector} changes the values in \lstinline{accelerometerValues} or \lstinline{proximityValues} and other applications use the values, they will receive wrong values and this will become a problem. To avoid this, lines 15/22 should clone the values with: \lstinline{event.values.clone()}.
+The mistake is in lines 15/22 where event.values are not copied. This is a mistake since the application doesn't own the event and thus shouldn't change it's values as they might be used again by other applications (the event object may be part of an internal pool and may be reused by the framework). Depending on if the log method or any other method in the class \lstinline{SensorValuesDetector} change the values in \lstinline{accelerometerValues} or \lstinline{proximityValues} and other applications use the values, they will receive wrong values and this will become a problem. Also, the values may change at any time (when the sensor produces new values).
+
+To avoid this, lines 15/22 should clone the values with: \lstinline{event.values.clone()}.
 
 \end{enumerate}
 
@@ -94,11 +96,11 @@ Resumed, Paused and Stopped. The corresponding callback functions are:
 
 \item (Resources)
 
-Strings should be defined in \lstinline{res/values/strings.xml}. The advantage of this approach is that a string can be reused many times and when there is the need to change this string, it can be changed once in \lstinline{strings.xml} and take effect everywhere the string is used. Also, all strings are in one place so it's easy to find a specific string.
+Strings should be defined in \lstinline{res/values/strings.xml}. The advantage of this approach is that a string can be reused many times and when there is the need to change this string, it can be changed once in \lstinline{strings.xml} and take effect everywhere the string is used. Also, all strings are in one place so it's easy to find a specific string and develop multilingual programs.
 
 \item (Intents)
 
-Explicit intents explicitly state the class of the component to be run. In the following code snippet, TargetActivity will be run, although not only components of type Activity can be run but also components of type Service and BroadcastReceiver.
+Explicit intents explicitly state the class of the component to be run. In the following code snippet, TargetActivity will be run, although not only components of type Activity can be run but also components of type Se1rvice and BroadcastReceiver.
 
 \begin{lstlisting}
 Intent intent = new Intent(this, TargetActivity.class);
