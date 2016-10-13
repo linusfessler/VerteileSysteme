@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         setContentView(R.layout.activity_main);
 
         // For testing
-        Intent startDeviceActivity = new Intent(MainActivity.this, ConnectedActivity.class);
-        startActivity(startDeviceActivity);
+        //Intent startDeviceActivity = new Intent(MainActivity.this, ConnectedActivity.class);
+        //startActivity(startDeviceActivity);
 
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         btAdapter = bluetoothManager.getAdapter();

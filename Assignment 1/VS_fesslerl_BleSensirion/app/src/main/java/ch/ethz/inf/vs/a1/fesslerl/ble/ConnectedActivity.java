@@ -54,14 +54,14 @@ public class ConnectedActivity extends AppCompatActivity {
         gm.updateTempGraph(0, textHum);
 
         // For testing
-        new Thread(new TestValueGenerator(100, this)).start();
+        //new Thread(new TestValueGenerator(100, this)).start();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         setViewConnectionState(false);
-        //connectToDevice();
+        connectToDevice();
     }
 
     private void connectToDevice(){
@@ -132,7 +132,7 @@ public class ConnectedActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        //closeConnection();
+        closeConnection();
     }
 
     private void closeConnection(){
