@@ -4,6 +4,7 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ public class LiveGraphManager {
 
     private final int MAX_DATA_POINTS_TEMP = 100;
     private final int MAX_DATA_POINTS_HUM = 100;
+    private final double TEMP_Y_AXIS_ADD = 2.0;
     private final String UNIT_TEMP = "°C";
     private final String UNIT_HUM = "%";
 
@@ -47,7 +49,10 @@ public class LiveGraphManager {
     // TODO: finish this init function
     private void initTempGraph(){
         seriesTemp = new LineGraphSeries<>();
-        initGraph(graphTemp, seriesTemp, UNIT_TEMP, Color.BLUE);
+        initGraph(graphTemp, seriesTemp, UNIT_TEMP, Color.RED);
+        graphTemp.getViewport().setYAxisBoundsManual(true);
+        graphTemp.getViewport().setMinY(0.);
+        graphTemp.getViewport().setMaxX(30.);
     }
 
     private void initHumGraph(){
@@ -58,7 +63,7 @@ public class LiveGraphManager {
         graphHum.getViewport().setMaxY(100.0);
 
         seriesHum = new LineGraphSeries<>();
-        initGraph(graphHum, seriesHum, UNIT_HUM, Color.RED);
+        initGraph(graphHum, seriesHum, UNIT_HUM, Color.BLUE);
     }
 
     private void initGraph(GraphView graph, LineGraphSeries series, String unit, int color) {
@@ -79,13 +84,17 @@ public class LiveGraphManager {
 
     public void updateTempGraph(double val, TextView textView) {
         updateGraph(graphTemp, seriesTemp, val, MAX_DATA_POINTS_TEMP, textView, "Temperature: ", UNIT_TEMP);
+        if(!seriesTemp.isEmpty()){
+            graphTemp.getViewport().setMinY(seriesTemp.getLowestValueY() - TEMP_Y_AXIS_ADD);
+            graphTemp.getViewport().setMaxY(seriesTemp.getHighestValueY() + TEMP_Y_AXIS_ADD);
+        }
     }
 
     public void updateHumGraph(double val, TextView textView) {
         updateGraph(graphHum, seriesHum, val, MAX_DATA_POINTS_HUM, textView, "Humidity: ", UNIT_HUM);
     }
 
-    private void updateGraph(GraphView graph, LineGraphSeries series, double val, int max, TextView textView, String text, String unit) {
+    private void updateGraph( GraphView graph, LineGraphSeries series, double val, int max, TextView textView, String text, String unit) {
         double time = (Calendar.getInstance().getTimeInMillis()- startTime)/1000.;
         if(!series.isEmpty())
             graph.getViewport().setMinX(series.getLowestValueX());

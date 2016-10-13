@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Created by markus on 13.10.16.
  */
-
+/*
 public class TestValueGenerator implements Runnable {
 
     int max;
@@ -36,4 +36,4 @@ public class TestValueGenerator implements Runnable {
             Log.d(LOG_LOC, "#### Value added");
         }
     }
-}
+}*/
