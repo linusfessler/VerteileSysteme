@@ -1,5 +1,5 @@
 package ch.ethz.inf.vs.a2.tests;
-/*
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ch.ethz.inf.vs.a2.http.HttpRawRequest;
-import ch.ethz.inf.vs.a2.solution.http.HttpRawRequestImpl;
+import ch.ethz.inf.vs.a2.HttpRawRequestImpl;
 
 
 public class HttpRawRequestTests{
@@ -156,4 +156,3 @@ public class HttpRawRequestTests{
 	}
 
 }
-*/

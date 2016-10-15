@@ -1,4 +1,5 @@
 package ch.ethz.inf.vs.a2.sensor;
+//TODO: Uncomment file - find out if we should put everything in "solution"
 /*
 import ch.ethz.inf.vs.a2.solution.sensor.TextSensor;
 import ch.ethz.inf.vs.a2.solution.sensor.JsonSensor;
