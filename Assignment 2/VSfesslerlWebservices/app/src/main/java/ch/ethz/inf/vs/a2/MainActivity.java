@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startTask1(View v){
-        Intent i = new Intent(this, MainActivity.class);
+        Intent i = new Intent(this, RestClientActivity.class);
         startActivity(i);
     }
 
