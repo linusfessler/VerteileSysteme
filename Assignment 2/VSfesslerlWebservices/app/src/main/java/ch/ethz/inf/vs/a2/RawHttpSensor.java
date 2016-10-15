@@ -45,7 +45,7 @@ public class RawHttpSensor extends AbstractSensor {
 
     @Override
     public double parseResponse(String response) {
-        //TODO: Keine besonders ausgereifte parse technik, reicht das so?
+        //TODO: reicht das so?
         String tmp = response.split("getterValue")[1];
         boolean writing = false;
         StringBuilder sb = new StringBuilder();

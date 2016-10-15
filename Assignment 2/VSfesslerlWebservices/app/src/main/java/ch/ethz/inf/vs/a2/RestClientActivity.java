@@ -14,13 +14,23 @@ public class RestClientActivity extends AppCompatActivity implements SensorListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rest_client);
-        RawHttpSensor sensor = new RawHttpSensor("vslab.inf.ethz.ch",8081,"/sunspots/Spot2/sensors/temperature");
-        sensor.registerListener(this);
-        sensor.getTemperature();
+        RawHttpSensor sensor1 = new RawHttpSensor("vslab.inf.ethz.ch",8081,"/sunspots/Spot2/sensors/temperature");
+        sensor1.registerListener(this);
+        TextSensor sensor2 = new TextSensor("http://vslab.inf.ethz.ch:8081/sunspots/Spot1/sensors/temperature");
+        sensor2.registerListener(this);
+
+
+        sensor1.getTemperature();
+        sensor2.getTemperature();
+
     }
 
     @Override
     public void onReceiveSensorValue(double value) {
+        //if there was an error before, clear the message textview.
+        TextView textMsg = (TextView) findViewById(R.id.txt_message);
+        textMsg.setText("");
+        //show value to the user.
         TextView textTemp = (TextView) findViewById(R.id.txt_temp);
         textTemp.setText(String.format(getString(R.string.temp_val),value));
         Log.d(LOGGING_TAG, "onReceiveSensorValue: " + value);
@@ -29,6 +39,8 @@ public class RestClientActivity extends AppCompatActivity implements SensorListe
 
     @Override
     public void onReceiveMessage(String message) {
+        TextView textMsg = (TextView) findViewById(R.id.txt_message);
+        textMsg.setText(message);
         Log.d(LOGGING_TAG, "OnReceiveMessage: " + message);
     }
 }
