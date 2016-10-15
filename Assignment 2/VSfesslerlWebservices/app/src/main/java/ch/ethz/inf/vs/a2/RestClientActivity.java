@@ -21,7 +21,7 @@ public class RestClientActivity extends AppCompatActivity implements SensorListe
         JsonSensor sensor3 = new JsonSensor("http://vslab.inf.ethz.ch:8081/sunspots/Spot1/sensors/temperature");
         sensor3.registerListener(this);
 
-
+        //TODO: Müssen wir alle Werte anzeigen? Wenn ja, wie? OnReceiveValue unterscheidet nicht zwischen sensoren.
         sensor1.getTemperature();
         sensor2.getTemperature();
         sensor3.getTemperature();
