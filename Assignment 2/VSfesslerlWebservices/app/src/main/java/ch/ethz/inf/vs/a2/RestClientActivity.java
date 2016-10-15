@@ -18,10 +18,13 @@ public class RestClientActivity extends AppCompatActivity implements SensorListe
         sensor1.registerListener(this);
         TextSensor sensor2 = new TextSensor("http://vslab.inf.ethz.ch:8081/sunspots/Spot1/sensors/temperature");
         sensor2.registerListener(this);
+        JsonSensor sensor3 = new JsonSensor("http://vslab.inf.ethz.ch:8081/sunspots/Spot1/sensors/temperature");
+        sensor3.registerListener(this);
 
 
         sensor1.getTemperature();
         sensor2.getTemperature();
+        sensor3.getTemperature();
 
     }
 
