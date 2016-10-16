@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_soap"
+    android:id="@+id/activity_server"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ch.ethz.inf.vs.a2.activity.SoapActivity">
+    tools:context="ch.ethz.inf.vs.a2.activity.ServerActivity">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/txt_ip"
+        android:text="@string/ip"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/txt_port"
+        android:text="@string/port"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/btn_xml"
-        android:text="@string/xml"
-        android:onClick="onXmlButtonClick"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_soap"
-        android:text="@string/soap"
-        android:onClick="onSoapButtonClick"/>
+        android:id="@+id/btn_toggle_server_state"
+        android:onClick="toggleServerState"/>
 </LinearLayout>
