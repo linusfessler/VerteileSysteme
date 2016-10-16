@@ -24,6 +24,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startTask3(View v){
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, ServerActivity.class));
     }
 }
