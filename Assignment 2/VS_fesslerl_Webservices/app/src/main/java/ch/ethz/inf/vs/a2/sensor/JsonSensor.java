@@ -16,8 +16,8 @@ import ch.ethz.inf.vs.a2.sensor.AbstractSensor;
  */
 
 public class JsonSensor extends AbstractSensor {
-    private final String LOGGING_TAG = "###JsonSensor";
 
+    private final String LOGGING_TAG = "###JsonSensor";
     private final String urlString;
 
     public JsonSensor(String url){

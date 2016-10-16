@@ -1,5 +1,9 @@
 package ch.ethz.inf.vs.a2.sensor;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+
 /**
  * A sensor representation that provides temperature measurements. 
  * 
