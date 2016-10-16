@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Webservices</string>
+    <string name="task1">Go to task 1</string>
+    <string name="task2">Go to task 2</string>
+    <string name="task3">Go to task 3</string>
+    <string name="temp_val">Temperature sensor value: %,.2f</string>
+</resources>
