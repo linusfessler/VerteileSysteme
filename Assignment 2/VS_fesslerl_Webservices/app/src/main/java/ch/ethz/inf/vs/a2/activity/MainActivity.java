@@ -16,17 +16,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startTask1(View v){
-        Intent i = new Intent(this, RestClientActivity.class);
-        startActivity(i);
+        startActivity(new Intent(this, RestActivity.class));
     }
 
     public void startTask2(View v){
-        Intent i = new Intent(this, MainActivity.class);
-        startActivity(i);
+        startActivity(new Intent(this, SoapActivity.class));
     }
 
     public void startTask3(View v){
-        Intent i = new Intent(this, MainActivity.class);
-        startActivity(i);
+        startActivity(new Intent(this, MainActivity.class));
     }
 }

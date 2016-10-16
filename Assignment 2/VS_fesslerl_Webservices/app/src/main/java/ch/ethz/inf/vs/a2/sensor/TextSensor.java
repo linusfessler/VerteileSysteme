@@ -15,6 +15,7 @@ import ch.ethz.inf.vs.a2.sensor.AbstractSensor;
  */
 
 public class TextSensor extends AbstractSensor {
+
     private final String urlString;
 
     public TextSensor(String url){

@@ -1,7 +1,12 @@
 <resources>
     <string name="app_name">Webservices</string>
-    <string name="task1">Go to task 1</string>
-    <string name="task2">Go to task 2</string>
+    <string name="task1">REST</string>
+    <string name="task2">SOAP</string>
     <string name="task3">Go to task 3</string>
+    <string name="raw_http">Raw HTTP</string>
+    <string name="text">Text</string>
+    <string name="json">JSON</string>
+    <string name="xml">XML</string>
+    <string name="soap">SOAP</string>
     <string name="temp_val">Temperature sensor value: %,.2f</string>
 </resources>

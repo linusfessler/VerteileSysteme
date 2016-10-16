@@ -15,7 +15,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.RestClientActivity"></activity>
+        <activity android:name=".activity.RestActivity"></activity>
+        <activity android:name=".activity.SoapActivity"></activity>
+        <activity android:name=".activity.SensorActivity"></activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>
