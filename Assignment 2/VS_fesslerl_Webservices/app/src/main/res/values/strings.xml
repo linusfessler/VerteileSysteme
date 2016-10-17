@@ -13,4 +13,5 @@
     <string name="port">Port: %s</string>
     <string name="start_server">Start Server</string>
     <string name="stop_server">Stop Server</string>
+    <string name="turn_on_hotspot">Please turn on your hotspot in order to use the server.</string>
 </resources>
