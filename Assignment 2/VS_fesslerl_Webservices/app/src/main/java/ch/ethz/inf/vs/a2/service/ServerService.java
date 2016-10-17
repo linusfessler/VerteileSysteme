@@ -4,12 +4,8 @@ import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-
-import java.lang.reflect.Method;
 
 /**
  * Created by linus on 16.10.2016.
@@ -42,16 +38,12 @@ public class ServerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (!isHotSpotOn())
-            toggleHotSpot();
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (isHotSpotOn())
-            toggleHotSpot();
     }
 
     public static boolean isRunning(Context context) {
@@ -59,36 +51,6 @@ public class ServerService extends Service {
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE))
             if (ServerService.class.getName().equals(service.service.getClassName()))
                 return true;
-        return false;
-    }
-
-    private boolean isHotSpotOn() {
-        WifiManager wifimanager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        try {
-            Method method = wifimanager.getClass().getDeclaredMethod("isWifiApEnabled");
-            method.setAccessible(true);
-            return (Boolean) method.invoke(wifimanager);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    private boolean toggleHotSpot() {
-        WifiManager wifimanager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        WifiConfiguration wificonfiguration = null;
-        try {
-            // if WiFi is on, turn it off
-            if (isHotSpotOn())
-                wifimanager.setWifiEnabled(false);
-            Method method = wifimanager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
-            method.invoke(wifimanager, wificonfiguration, !isHotSpotOn()); // Doesn't work, needs some permission I think
-            return true;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
         return false;
     }
 }
