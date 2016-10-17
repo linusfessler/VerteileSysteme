@@ -1,0 +1,136 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{enumerate}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{csquotes}
+
+\setlength\parindent{0pt}
+\setcounter{section}{3}
+
+\definecolor{pblue}{rgb}{0.13,0.13,1}
+\definecolor{pgreen}{rgb}{0,0.5,0}
+\definecolor{pred}{rgb}{0.9,0,0}
+\definecolor{pgrey}{rgb}{0.46,0.45,0.48}
+
+\lstset{
+	language=Java,
+	tabsize=2,
+	showspaces=false,
+	showtabs=false,
+	breaklines=true,
+	showstringspaces=false,
+	breakatwhitespace=true,
+	commentstyle=\color{pgreen},
+	keywordstyle=\color{pblue},
+	stringstyle=\color{pred},
+	basicstyle=\small\ttfamily,
+	numbers=left,
+	numberstyle=\tiny,
+	numbersep=5pt
+}
+
+\title{Distributed Systems HS 2016\\Assignment 2}
+\author{Markus Hauptner, Johannes Beck, Linus Fessler}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Mini-Test}
+
+\begin{enumerate}
+
+\item
+\begin{enumerate}[a)]
+
+\item
+It is defined as follows:
+\begin{displayquote}
+The Request-Line begins with a method token, followed by the Request-URI and the protocol version, and ending with CRLF. The elements are separated by SP characters. No CR or LF is allowed except in the final CRLF sequence.
+
+\lstinline{Request-Line = Method SP Request-URI SP HTTP-Version CRLF}
+\end{displayquote}
+
+\item
+\lstinline{Request-Line = GET 192.168.1.1:8080 HTTP/1.1}
+
+\item
+Representation: Interesting header-fields are \lstinline{Accept}, \lstinline{Accept-Charset}, \lstinline{Content-Length} and \lstinline{Content-Type}.
+
+Caching: interesting header-fields \lstinline{Date}, \lstinline{Last Modified}, \lstinline{Cache-Control}, \lstinline{Expires} and \lstinline{Age}.
+
+\end{enumerate}
+
+\item
+\begin{enumerate}[a)]
+
+\item
+The important classes are \lstinline{Socket} and \lstinline{ServerSocket}. The \lstinline{ServerSocket} implements a socket that servers can use to listen for and accept connections to clients. The server creates a \lstinline{new ServerSocket(port)} to listen at port \lstinline{port} and the clients create a \lstinline{new Socket(ip_address, port)} to connect to the server at \lstinline{ip_address:port}.
+
+\item
+The methods are \lstinline{getInputStream()} and \lstinline{getOutputStream()}.
+
+Output streams are buffered and when the buffer is full---due to the client not being ready to receive any packets and not responding with acknowledgements so the server stops sending---but the current thread still wants to write to the stream, the stream will block the thread.
+
+Input streams on the other hand will only block if the client didn't set the FIN flag on the last packet.
+
+\end{enumerate}
+
+\item
+\begin{enumerate}[a)]
+
+\item Incorrect, REST is not a protocol.
+\item Incorrect, this is the definition of stateful.
+\item Correct.
+\item Incorrect, the server may send data in any format. HTML, XML and JSON are commonly used.
+
+\end{enumerate}
+
+\item
+\begin{enumerate}[a)]
+
+\item
+Generally, WSDL can be used to describe network services in an XML document. In case of the SunSPOTWebservice, the URL to the document that describes its service is \\ \url{http://vslab.inf.ethz.ch:8080/SunSPOTWebServices/SunSPOTWebservice?wsdl}. The document can be simply retreived in a browser if the URL is known.
+
+\item
+They can be found in the WSDL document mentioned in a):
+\begin{lstlisting}
+<message name="getSpot">
+	<part name="parameters" element="tns:getSpot"/>
+</message>
+<message name="getSpotResponse">
+	<part name="parameters" element="tns:getSpotResponse"/>
+</message>
+\end{lstlisting}
+
+\item
+The \lstinline{soap:binding} tag defines \url{http://schemas.xmlsoap.org/soap/http} as transport protocol. This should be changed to, for example, \url{http://schemas.pocketsoap.com/soap/smtp} in order to use SMTP.
+
+The port \lstinline{8080} in the \lstinline{soap:address} \url{http://vslab.inf.ethz.ch:8080/SunSPOTWebServices/SunSPOTWebservice} would probably be \lstinline{25} as this is the default port used by SMTP.
+
+\end{enumerate}
+
+\item
+\begin{enumerate}[a)]
+
+\item
+Each emulated device will have its own router and will have assigned an IP address of \lstinline{10.0.2.15} behind its router.
+
+\item
+To the emulated device loopback interface.
+
+\item
+With IP address \lstinline{10.0.2.2}.
+
+\item
+By settings up port forwarding in adb with \lstinline{adb forward tcp:port1 tcp:port2} where port1 is the port on the development machine and port2 the port on the emulated device.
+
+\end{enumerate}
+
+\end{enumerate}
+
+\end{document}
