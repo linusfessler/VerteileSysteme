@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,7 +16,7 @@ import java.lang.reflect.Method;
 import java.util.Formatter;
 
 import ch.ethz.inf.vs.a2.R;
-import ch.ethz.inf.vs.a2.service.ServerService;
+import ch.ethz.inf.vs.a2.server.ServerService;
 
 public class ServerActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -49,7 +48,7 @@ public class ServerActivity extends AppCompatActivity implements ActivityCompat.
 
     public void toggleServerState(View v) {
         if (!ServerService.isRunning(this))
-            if (!isHotSpotOn()) {
+            /*if (!isHotSpotOn()) {
                 // Request user to turn hotspot on
 
                 if (mToast != null)
@@ -60,7 +59,7 @@ public class ServerActivity extends AppCompatActivity implements ActivityCompat.
                 Intent intent = new Intent();
                 intent.setClassName("com.android.settings", "com.android.settings.TetherSettings");
                 startActivity(intent);
-            } else
+            } else*/
                 startService();
         else
             stopService();
