@@ -19,7 +19,7 @@
         <activity android:name=".activity.SoapActivity"></activity>
         <activity android:name=".activity.SensorActivity"></activity>
         <activity android:name=".activity.ServerActivity"></activity>
-        <service android:name=".service.ServerService"></service>
+        <service android:name=".server.ServerService"></service>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
