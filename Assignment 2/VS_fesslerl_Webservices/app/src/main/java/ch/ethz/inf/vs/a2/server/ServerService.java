@@ -135,7 +135,7 @@ public class ServerService extends Service {
             ParsedRequest request = parseRequest(in);
 
             //forward request
-            String response = resourceMap.containsKey(request.path)? resourceMap.get(request.path).handleRequest(request) : HttpResponse.generateErrorResponse("No such resourse");
+            String response = resourceMap.containsKey(request.path)? resourceMap.get(request.path).handleRequest(request) : HttpResponse.generateErrorResponse("No such resource");
 
             PrintWriter out = new PrintWriter(socket.getOutputStream());
             out.print(response);

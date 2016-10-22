@@ -2,6 +2,7 @@ package ch.ethz.inf.vs.a2.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -28,11 +29,17 @@ public class ServerActivity extends AppCompatActivity implements ActivityCompat.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_server);
 
+        // Get IP Address
+        WifiManager wifiMgr = (WifiManager) getSystemService(WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
+        int ip = wifiInfo.getIpAddress();
+        String ipAddress = android.text.format.Formatter.formatIpAddress(ip);
+
         // Set IP Text
         Formatter formatter = new Formatter();
-        String ip = formatter.format(getString(R.string.ip), "192.168.1.1 (Placeholder)").toString();
+        ipAddress = formatter.format(getString(R.string.ip), ipAddress).toString();
         TextView txtIp = (TextView) findViewById(R.id.txt_ip);
-        txtIp.setText(ip);
+        txtIp.setText(ipAddress);
 
         // Set Port Text
         formatter = new Formatter();
