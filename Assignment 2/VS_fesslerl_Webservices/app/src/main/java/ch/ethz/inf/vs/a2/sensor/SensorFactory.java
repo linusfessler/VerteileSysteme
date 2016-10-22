@@ -1,38 +1,33 @@
 package ch.ethz.inf.vs.a2.sensor;
 
+import static ch.ethz.inf.vs.a2.http.RemoteServerConfiguration.HOST;
+import static ch.ethz.inf.vs.a2.http.RemoteServerConfiguration.REST_PORT;
+import static ch.ethz.inf.vs.a2.http.RemoteServerConfiguration.SOAP_PORT;
+import static ch.ethz.inf.vs.a2.http.RemoteServerConfiguration.SPOT1;
+import static ch.ethz.inf.vs.a2.http.RemoteServerConfiguration.XML;
+import static ch.ethz.inf.vs.a2.http.RemoteServerConfiguration.WS;
+
 public abstract class SensorFactory {
 
 	public static Sensor getInstance(Type type) {
 		switch (type) {
 		case RAW_HTTP:
 			// return Sensor implementation using a raw HTTP request
-			return new RawHttpSensor("vslab.inf.ethz.ch", 8081, "/sunspots/Spot2/sensors/temperature");
+			return new RawHttpSensor(HOST, REST_PORT, SPOT1 + "temperature");
 		case TEXT:
 			// return Sensor implementation using text/html representation
-			return new TextSensor("http://vslab.inf.ethz.ch:8081/sunspots/Spot1/sensors/temperature");
+			return new TextSensor("http://" + HOST + ":" + REST_PORT + SPOT1 + "temperature");
 		case JSON:
 			// return Sensor implementation using application/json representation
-			return new JsonSensor("http://vslab.inf.ethz.ch:8081/sunspots/Spot1/sensors/temperature");
+			return new JsonSensor("http://" + HOST + ":" + REST_PORT + SPOT1 + "temperature");
 		case XML:
-            // build XML string
-            StringBuilder sb = new StringBuilder ();
-            sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\">")
-                    .append("<S:Header/>")
-                    .append("<S:Body>")
-                    .append("<ns2:getSpot xmlns:ns2=\"http://webservices.vslecture.vs.inf.ethz.ch/\">")
-                    .append("<id>Spot3</id>")
-                    .append("</ns2:getSpot>")
-                    .append("</S:Body>")
-                    .append("</S:Envelope>");
-            String xml = sb.toString();
-
             // return Sensor implementation using application/xml representation
-            return new XmlSensor("http://vslab.inf.ethz.ch:8080/SunSPOTWebServices/SunSPOTWebservice",
-                    xml,
+            return new XmlSensor("http://" + HOST + ":" + SOAP_PORT + WS,
+                    XML,
                     "temperature");
 		case SOAP:
 			// return Sensor implementation using a SOAPObject
-			return new SoapSensor("http://vslab.inf.ethz.ch:8080/SunSPOTWebServices/SunSPOTWebservice",
+			return new SoapSensor("http://" + HOST + ":" + SOAP_PORT + WS,
                     "",
                     "http://webservices.vslecture.vs.inf.ethz.ch/",
                     "getSpot",

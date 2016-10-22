@@ -1,5 +1,7 @@
 package ch.ethz.inf.vs.a2.resource;
 
+import java.net.URI;
+
 import ch.ethz.inf.vs.a2.http.ParsedRequest;
 
 /**
@@ -7,7 +9,12 @@ import ch.ethz.inf.vs.a2.http.ParsedRequest;
  */
 
 public abstract class Resource {
-    //TODO: Maybe add an "URI" field here..
+
+    private URI uri;
+
+    public Resource(URI uri) {
+        this.uri = uri;
+    }
 
     public String handleRequest(ParsedRequest parsedRequest){
         switch (parsedRequest.method){
@@ -17,7 +24,10 @@ public abstract class Resource {
         return null;
     }
 
+    public URI getUri() {
+        return uri;
+    }
+
     protected abstract String get(ParsedRequest request);
     protected abstract String post(ParsedRequest request);
-
 }
