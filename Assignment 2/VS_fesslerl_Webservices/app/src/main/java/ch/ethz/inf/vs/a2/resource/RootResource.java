@@ -12,6 +12,7 @@ import ch.ethz.inf.vs.a2.http.ParsedRequest;
  */
 
 public class RootResource extends Resource {
+
     private List<URI> resources;
 
     public RootResource(){

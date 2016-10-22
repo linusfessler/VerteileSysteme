@@ -57,20 +57,15 @@ public class ServerService extends Service {
         rootResource = new RootResource();
 
         SensorManager manager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
 
         resourceMap.put("/", rootResource);
 
         try {
-
-            for(Sensor s : manager.getSensorList(Sensor.TYPE_ALL)) {
+            for(Sensor s : manager.getSensorList(Sensor.TYPE_ALL))
                 addResource("/"+ s.getName().replace(" ","_"), new SensorResource(s, manager));
-            }
         } catch (URISyntaxException e){
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -81,13 +76,12 @@ public class ServerService extends Service {
                 try {
                     serverSocket = new ServerSocket(PORT);
 
-
                     while(true) {
-                        final Socket currentSocket = serverSocket.accept();
+                        final Socket clientSocket = serverSocket.accept();
                         (new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                handleClientRequest(currentSocket);
+                                handleClientRequest(clientSocket);
                             }
                         })).start();
                     }
@@ -119,7 +113,7 @@ public class ServerService extends Service {
 
     private void close(){
         if(serverSocket != null){
-            try{
+            try {
                 serverSocket.close();
                 serverSocket = null;
             } catch (IOException e) {
@@ -135,18 +129,17 @@ public class ServerService extends Service {
             ParsedRequest request = parseRequest(in);
 
             //forward request
-            String response = resourceMap.containsKey(request.path)? resourceMap.get(request.path).handleRequest(request) : HttpResponse.generateErrorResponse("No such resource");
+            String response = resourceMap.containsKey(request.path) ? resourceMap.get(request.path).handleRequest(request) : HttpResponse.generateErrorResponse("No such resource");
 
             PrintWriter out = new PrintWriter(socket.getOutputStream());
             out.print(response);
             out.flush();
 
             socket.close();
-        }catch (Exception e){
+        } catch (Exception e){
             Log.d(LOGGING_TAG, "Error while handling client request.");
             e.printStackTrace();
         }
-
     }
 
     private ParsedRequest parseRequest(BufferedReader in) throws IOException{
@@ -180,8 +173,6 @@ public class ServerService extends Service {
         resourceMap.put(path, resource);
         rootResource.addResource(new URI(path));
     }
-
-
 }
 
 

@@ -19,5 +19,4 @@ public abstract class Resource {
 
     protected abstract String get(ParsedRequest request);
     protected abstract String post(ParsedRequest request);
-
 }

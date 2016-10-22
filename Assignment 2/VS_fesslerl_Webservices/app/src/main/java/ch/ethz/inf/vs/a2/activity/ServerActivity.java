@@ -22,7 +22,6 @@ import ch.ethz.inf.vs.a2.server.ServerService;
 public class ServerActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private Button mToggleServerStateButton;
-    private Toast mToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,19 +54,7 @@ public class ServerActivity extends AppCompatActivity implements ActivityCompat.
 
     public void toggleServerState(View v) {
         if (!ServerService.isRunning(this))
-            /*if (!isHotSpotOn()) {
-                // Request user to turn hotspot on
-
-                if (mToast != null)
-                    mToast.cancel();
-                mToast = Toast.makeText(getApplicationContext(), getString(R.string.turn_on_hotspot), Toast.LENGTH_LONG);
-                mToast.show();
-
-                Intent intent = new Intent();
-                intent.setClassName("com.android.settings", "com.android.settings.TetherSettings");
-                startActivity(intent);
-            } else*/
-                startService();
+            startService();
         else
             stopService();
     }
@@ -84,18 +71,5 @@ public class ServerActivity extends AppCompatActivity implements ActivityCompat.
         mToggleServerStateButton.setText(getString(R.string.start_server));
         stopService(intent);
         Log.d(getLocalClassName(), "Server stopped");
-    }
-
-    private boolean isHotSpotOn() {
-        WifiManager wifimanager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        try {
-            Method method = wifimanager.getClass().getDeclaredMethod("isWifiApEnabled");
-            method.setAccessible(true);
-            return (Boolean) method.invoke(wifimanager);
-        }
-        catch (Exception e) {
-            Log.e(getLocalClassName(), "", e);
-        }
-        return false;
     }
 }
