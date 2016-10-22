@@ -5,10 +5,11 @@ package ch.ethz.inf.vs.a2.http;
  */
 
 public class HttpResponse {
-    public static String generateHtmlResponse(String htmlBody){
+
+    public static String generateHtmlResponse(String successCode, String htmlBody){
         String html = "<html><body>" + htmlBody + "</body></html>";
         StringBuilder sb = new StringBuilder();
-        sb.append("HTTP/1.1 200 OK").append("\r\n");
+        sb.append("HTTP/1.1 " + successCode).append("\r\n");
         sb.append("Content-Type: ").append("text/html").append("\r\n");
         sb.append("Content-Length: ").append(html.length()).append("\r\n");
         sb.append("\r\n");
@@ -17,10 +18,10 @@ public class HttpResponse {
         return sb.toString();
     }
 
-    public static String generateErrorResponse(String errorTxt){
-        String html = "<html><body><h1>ERROR</h1><p>" + errorTxt + "</p><a href='/'>Return to root</a></body></html>";
+    public static String generateErrorResponse(String errorCode, String errorTxt){
+        String html = "<html><body><h1>" + errorCode + "</h1><p>" + errorTxt + "</p><a href='/'>Return to root</a></body></html>";
         StringBuilder sb = new StringBuilder();
-        sb.append("HTTP/1.1 400 Bad Request").append("\r\n");
+        sb.append("HTTP/1.1 " + errorCode).append("\r\n");
         sb.append("Content-Type: ").append("text/html").append("\r\n");
         sb.append("Content-Length: ").append(html.length()).append("\r\n");
         sb.append("\r\n");

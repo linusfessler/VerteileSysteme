@@ -19,12 +19,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
 
-import ch.ethz.inf.vs.a2.http.HttpResponse;
 import ch.ethz.inf.vs.a2.http.ParsedRequest;
-import ch.ethz.inf.vs.a2.resource.Resource;
 import ch.ethz.inf.vs.a2.resource.RootResource;
 import ch.ethz.inf.vs.a2.resource.SensorResource;
 
@@ -33,14 +29,11 @@ import ch.ethz.inf.vs.a2.resource.SensorResource;
  */
 
 public class ServerService extends Service {
-    private static final String LOGGING_TAG = "###ServerService";
-    public static final int PORT = 8088;
 
+    public static final int PORT = 8088;
 
     private Thread serverThread;
     private ServerSocket serverSocket;
-
-    private Map<String, Resource> resourceMap;
     private RootResource rootResource;
 
     @Nullable
@@ -53,18 +46,13 @@ public class ServerService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        resourceMap = new HashMap<>();
-        rootResource = new RootResource();
-
-        SensorManager manager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
-        resourceMap.put("/", rootResource);
-
         try {
+            rootResource = new RootResource(new URI("/"));
+            SensorManager manager = (SensorManager) getSystemService(SENSOR_SERVICE);
             for(Sensor s : manager.getSensorList(Sensor.TYPE_ALL))
-                addResource("/"+ s.getName().replace(" ","_"), new SensorResource(s, manager));
-        } catch (URISyntaxException e){
-            e.printStackTrace();
+                rootResource.addResource(new SensorResource(new URI(rootResource.getUri().toString() + s.getName().replace(" ", "_")), s, manager));
+        } catch (URISyntaxException e) {
+            Log.e(getClass().getSimpleName(), "", e);
         }
     }
 
@@ -86,7 +74,7 @@ public class ServerService extends Service {
                         })).start();
                     }
                 } catch (SocketException sockException){
-                    //Do Nothing. Server was stopped.
+                    // Do Nothing. Server was stopped.
                 } catch (IOException e){
                     e.printStackTrace();
                 }
@@ -111,7 +99,7 @@ public class ServerService extends Service {
         return false;
     }
 
-    private void close(){
+    private void close() {
         if(serverSocket != null){
             try {
                 serverSocket.close();
@@ -122,27 +110,23 @@ public class ServerService extends Service {
         }
     }
 
-    private void handleClientRequest(Socket socket){
-        Log.d(LOGGING_TAG, "got request.");
+    private void handleClientRequest(Socket socket) {
+        Log.d(getClass().getName(), "Got request.");
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             ParsedRequest request = parseRequest(in);
 
-            //forward request
-            String response = resourceMap.containsKey(request.path) ? resourceMap.get(request.path).handleRequest(request) : HttpResponse.generateErrorResponse("No such resource");
-
             PrintWriter out = new PrintWriter(socket.getOutputStream());
-            out.print(response);
+            out.print(rootResource.handleRequest(request));
             out.flush();
 
             socket.close();
         } catch (Exception e){
-            Log.d(LOGGING_TAG, "Error while handling client request.");
-            e.printStackTrace();
+            Log.d(getClass().getName(), e.getMessage());
         }
     }
 
-    private ParsedRequest parseRequest(BufferedReader in) throws IOException{
+    private ParsedRequest parseRequest(BufferedReader in) throws IOException {
 
         ParsedRequest request = parseFirstLine(in.readLine());
         parseHeader(in, request);
@@ -150,16 +134,19 @@ public class ServerService extends Service {
         return request;
     }
 
-    private ParsedRequest parseFirstLine(String line) throws IOException{
-
-        if(line != null){
+    private ParsedRequest parseFirstLine(String line) throws IOException {
+        if (line != null){
             String[] splitLine = line.split("\\s");
-            return new ParsedRequest(splitLine[0], splitLine[1]);
+            try {
+                return new ParsedRequest(splitLine[0], new URI(splitLine[1]));
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
         }
-        throw new IOException("Invalid HTTP request: Unable to parse first line.");
+        throw new IOException("Invalid HTTP request: First line is null.");
     }
 
-    private void parseHeader(BufferedReader in, ParsedRequest request) throws IOException{
+    private void parseHeader(BufferedReader in, ParsedRequest request) throws IOException {
         String line;
         while ((line = in.readLine()) != null) {
             if(line.isEmpty())
@@ -167,11 +154,6 @@ public class ServerService extends Service {
             String[] split = line.split("\\s");
             request.addHeader(split[0].substring(0,split[0].length() - 1),split[1]);
         }
-    }
-
-    private void addResource(String path, Resource resource) throws URISyntaxException{
-        resourceMap.put(path, resource);
-        rootResource.addResource(new URI(path));
     }
 }
 
