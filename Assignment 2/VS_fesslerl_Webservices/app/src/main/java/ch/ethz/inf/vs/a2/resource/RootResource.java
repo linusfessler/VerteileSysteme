@@ -1,7 +1,5 @@
 package ch.ethz.inf.vs.a2.resource;
 
-import android.util.Log;
-
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,19 +25,13 @@ public class RootResource extends Resource {
     }
 
     public Resource getResource(URI uri) {
-        return resourceMap.get(uri);
+        return resourceMap.containsKey(uri) ? resourceMap.get(uri) : null;
     }
 
     @Override
     protected String get(ParsedRequest request) {
         if (!request.header.get("Accept").contains("*/*") && !request.header.get("Accept").contains("text/html"))
             return HttpResponse.generateErrorResponse("415 Unsupported Media Type", "Content-Type is text/html.");
-
-        // Forward request to SensorResource
-        if (!getUri().equals(request.uri))
-            return resourceMap.containsKey(request.uri) ?
-                    resourceMap.get(request.uri).handleRequest(request) :
-                    HttpResponse.generateErrorResponse("404 Not Found", "Sensor not found");
 
         StringBuilder sb = new StringBuilder();
         sb.append("<ul>");
@@ -53,7 +45,7 @@ public class RootResource extends Resource {
 
         String content = sb.toString();
 
-        return HttpResponse.generateHtmlResponse("200 OK", content);
+        return HttpResponse.generateResponse("200 OK", content);
     }
 
     @Override
