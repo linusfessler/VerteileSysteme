@@ -12,7 +12,7 @@ public class HttpRawRequestImpl implements HttpRawRequest {
         StringBuilder sb = new StringBuilder();
         sb.append("GET ").append(path).append(" HTTP/1.1").append("\r\n");
         sb.append("Host: ").append(host).append(":").append(port).append("\r\n");
-        sb.append("Accept: ").append("text/html").append("\r\n");
+        sb.append("Accept: ").append("text/plain").append("\r\n");
         sb.append("Connection: close").append("\r\n");
         sb.append("\r\n");
         return sb.toString();
