@@ -16,7 +16,7 @@ public abstract class Resource {
         this.uri = uri;
     }
 
-    public String handleRequest(ParsedRequest parsedRequest){
+    public String handleRequest(ParsedRequest parsedRequest) {
         switch (parsedRequest.method){
             case "GET": return get(parsedRequest);
             case "POST": return post(parsedRequest);

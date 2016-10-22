@@ -40,16 +40,16 @@ public class SensorResource extends Resource implements SensorEventListener {
         StringBuilder sb = new StringBuilder();
         sb.append("<h3>").append(sensor.getName()).append("</h3>");
         sb.append("<ul>");
-        for(int i = 0; i < values.length ; ++i)
+        for (int i = 0; i < values.length ; ++i)
             sb.append("<li>Sensor Value "+i+": ").append(values[i]).append(" ").append(types.getUnitString(sensor.getType())).append("</li>");
         sb.append("</ul>");
         sb.append("<a href='/'>Return to root</a>");
-        return HttpResponse.generateHtmlResponse("200 OK", sb.toString());
+        return HttpResponse.generateResponse("200 OK", sb.toString());
     }
 
     @Override
     protected String post(ParsedRequest request) {
-        return null;
+        return HttpResponse.generateErrorResponse("405 Method Not Allowed", "Post not defined for Sensor Resource.");
     }
 
     @Override

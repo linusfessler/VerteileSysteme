@@ -6,7 +6,7 @@ package ch.ethz.inf.vs.a2.http;
 
 public class HttpResponse {
 
-    public static String generateHtmlResponse(String successCode, String htmlBody){
+    public static String generateResponse(String successCode, String htmlBody){
         String html = "<html><body>" + htmlBody + "</body></html>";
         StringBuilder sb = new StringBuilder();
         sb.append("HTTP/1.1 " + successCode).append("\r\n");
