@@ -1,8 +1,8 @@
 package ch.ethz.inf.vs.a2.resource;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import ch.ethz.inf.vs.a2.http.HttpResponse;
 import ch.ethz.inf.vs.a2.http.ParsedRequest;
@@ -12,33 +12,44 @@ import ch.ethz.inf.vs.a2.http.ParsedRequest;
  */
 
 public class RootResource extends Resource {
-    private List<URI> resources;
 
-    public RootResource(){
-        resources = new ArrayList<>();
+    private Map<URI, Resource> resourceMap;
+
+    public RootResource(URI uri) {
+        super(uri);
+        resourceMap = new HashMap<>();
     }
 
-    public void addResource(URI uri){
-        resources.add(uri);
+    public void addResource(Resource resource) {
+        resourceMap.put(resource.getUri(), resource);
+    }
+
+    public Resource getResource(URI uri) {
+        return resourceMap.containsKey(uri) ? resourceMap.get(uri) : null;
     }
 
     @Override
     protected String get(ParsedRequest request) {
-        StringBuilder sb = new StringBuilder();
+        if (!request.header.get("Accept").contains("*/*") && !request.header.get("Accept").contains("text/html"))
+            return HttpResponse.generateErrorResponse("415 Unsupported Media Type", "Content-Type is text/html.");
 
+        StringBuilder sb = new StringBuilder();
         sb.append("<ul>");
-        for(URI uri : resources){
-            sb.append("<li><a href='").append(uri.toString()).append("'>").append(uri.toString()).append("</a></li>");
-        }
+        for (Resource resource : resourceMap.values())
+            sb.append("<li><a href='")
+                    .append(resource.getUri().toString())
+                    .append("'>")
+                    .append(resource.getUri().toString())
+                    .append("</a></li>");
         sb.append("</ul>");
 
         String content = sb.toString();
 
-        return HttpResponse.generateHtmlResponse(content);
+        return HttpResponse.generateResponse("200 OK", content);
     }
 
     @Override
     protected String post(ParsedRequest request) {
-        return HttpResponse.generateErrorResponse("Post not defnied for Sensor Resource");
+        return HttpResponse.generateErrorResponse("405 Method Not Allowed", "Post not defined for Root Resource.");
     }
 }

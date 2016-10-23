@@ -4,9 +4,13 @@ import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -19,28 +23,25 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.Map;
 
+import ch.ethz.inf.vs.a2.activity.ServerActivity;
 import ch.ethz.inf.vs.a2.http.HttpResponse;
 import ch.ethz.inf.vs.a2.http.ParsedRequest;
+import ch.ethz.inf.vs.a2.resource.FlashlightResource;
 import ch.ethz.inf.vs.a2.resource.Resource;
 import ch.ethz.inf.vs.a2.resource.RootResource;
 import ch.ethz.inf.vs.a2.resource.SensorResource;
+import ch.ethz.inf.vs.a2.resource.VibratorResource;
 
 /**
  * Created by linus on 16.10.2016.
  */
 
 public class ServerService extends Service {
-    private static final String LOGGING_TAG = "###ServerService";
-    public static final int PORT = 8088;
-
 
     private Thread serverThread;
     private ServerSocket serverSocket;
-
-    private Map<String, Resource> resourceMap;
     private RootResource rootResource;
 
     @Nullable
@@ -53,24 +54,22 @@ public class ServerService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        resourceMap = new HashMap<>();
-        rootResource = new RootResource();
-
-        SensorManager manager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
-
-        resourceMap.put("/", rootResource);
-
         try {
+            rootResource = new RootResource(new URI("/"));
 
-            for(Sensor s : manager.getSensorList(Sensor.TYPE_ALL)) {
-                addResource("/"+ s.getName().replace(" ","_"), new SensorResource(s, manager));
-            }
-        } catch (URISyntaxException e){
+            SensorManager manager = (SensorManager) getSystemService(SENSOR_SERVICE);
+            for (Sensor s : manager.getSensorList(Sensor.TYPE_ALL))
+                rootResource.addResource(new SensorResource(new URI(rootResource.getUri().toString() + s.getName().replace(" ", "_")), s, manager));
+
+            Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+            rootResource.addResource(new VibratorResource((new URI(rootResource.getUri().toString() + "Vibrator_(Actuator)")), vibrator));
+
+            boolean hasFlashLight = getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH) &&
+                    getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
+            rootResource.addResource(new FlashlightResource((new URI(rootResource.getUri().toString() + "Flashlight_(Actuator)")), hasFlashLight));
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -79,20 +78,19 @@ public class ServerService extends Service {
             @Override
             public void run() {
                 try {
-                    serverSocket = new ServerSocket(PORT);
-
+                    serverSocket = new ServerSocket(ServerActivity.getPort());
 
                     while(true) {
-                        final Socket currentSocket = serverSocket.accept();
+                        final Socket clientSocket = serverSocket.accept();
                         (new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                handleClientRequest(currentSocket);
+                                handleClientRequest(clientSocket);
                             }
                         })).start();
                     }
                 } catch (SocketException sockException){
-                    //Do Nothing. Server was stopped.
+                    // Do Nothing. Server was stopped.
                 } catch (IOException e){
                     e.printStackTrace();
                 }
@@ -117,9 +115,9 @@ public class ServerService extends Service {
         return false;
     }
 
-    private void close(){
+    private void close() {
         if(serverSocket != null){
-            try{
+            try {
                 serverSocket.close();
                 serverSocket = null;
             } catch (IOException e) {
@@ -128,60 +126,78 @@ public class ServerService extends Service {
         }
     }
 
-    private void handleClientRequest(Socket socket){
-        Log.d(LOGGING_TAG, "got request.");
+    private void handleClientRequest(Socket socket) {
+        Log.d(getClass().getName(), "Got request.");
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            ParsedRequest request = parseRequest(in);
+            ParsedRequest request = parseRequest(in, socket);
 
-            //forward request
-            String response = resourceMap.containsKey(request.path)? resourceMap.get(request.path).handleRequest(request) : HttpResponse.generateErrorResponse("No such resourse");
+            String response;
+            if (rootResource.getUri().toString().equals(request.uri.toString()))
+                response = rootResource.handleRequest(request);
+            else {
+                Resource resource = rootResource.getResource(request.uri);
+                response = resource != null ?
+                        resource.handleRequest(request) :
+                        HttpResponse.generateErrorResponse("404 Not Found", "Resource not found");
+            }
 
             PrintWriter out = new PrintWriter(socket.getOutputStream());
             out.print(response);
             out.flush();
 
-            socket.close();
-        }catch (Exception e){
-            Log.d(LOGGING_TAG, "Error while handling client request.");
+            if (socket.isConnected())
+                socket.close();
+        } catch (Exception e){
             e.printStackTrace();
         }
-
     }
 
-    private ParsedRequest parseRequest(BufferedReader in) throws IOException{
-
+    private ParsedRequest parseRequest(BufferedReader in, Socket socket) throws IOException {
         ParsedRequest request = parseFirstLine(in.readLine());
         parseHeader(in, request);
+        parseContent(in, request);
 
         return request;
     }
 
-    private ParsedRequest parseFirstLine(String line) throws IOException{
-
-        if(line != null){
+    private ParsedRequest parseFirstLine(String line) throws IOException {
+        if (line != null) {
+            Log.d("###############", line);
             String[] splitLine = line.split("\\s");
-            return new ParsedRequest(splitLine[0], splitLine[1]);
+            try {
+                return new ParsedRequest(splitLine[0], new URI(splitLine[1]));
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
         }
-        throw new IOException("Invalid HTTP request: Unable to parse first line.");
+        throw new IOException("Invalid HTTP request: First line is null.");
     }
 
-    private void parseHeader(BufferedReader in, ParsedRequest request) throws IOException{
+    private void parseHeader(BufferedReader in, ParsedRequest request) throws IOException {
         String line;
-        while ((line = in.readLine()) != null) {
-            if(line.isEmpty())
-                break;
+        while ((line = in.readLine()) != null && !line.isEmpty()) {
+            Log.d("###############", line);
             String[] split = line.split("\\s");
             request.addHeader(split[0].substring(0,split[0].length() - 1),split[1]);
         }
     }
 
-    private void addResource(String path, Resource resource) throws URISyntaxException{
-        resourceMap.put(path, resource);
-        rootResource.addResource(new URI(path));
+    private void parseContent(BufferedReader in, ParsedRequest request) throws IOException {
+        if (!request.method.equals("POST") || !request.header.containsKey("Content-Length"))
+            return;
+
+        int length = Integer.parseInt(request.header.get("Content-Length"));
+        char[] cbuf = new char[length];
+        in.read(cbuf, 0, length);
+
+        String content = new String(cbuf);
+        String[] split = content.split("&");
+        for (String s : split) {
+            String[] subSplit = s.split("=");
+            request.addContent(subSplit[0], subSplit[1]);
+        }
     }
-
-
 }
 
 

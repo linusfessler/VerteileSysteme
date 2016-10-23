@@ -1,5 +1,7 @@
 package ch.ethz.inf.vs.a2.sensor;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -45,16 +47,10 @@ public class RawHttpSensor extends AbstractSensor {
 
     @Override
     public double parseResponse(String response) {
-        //TODO: reicht das so?
-        String tmp = response.split("getterValue")[1];
-        boolean writing = false;
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; tmp.charAt(i) != '<'; ++i){
-            if(writing)
-                sb.append(tmp.charAt(i));
-            if(tmp.charAt(i) == '>')
-                writing = true;
-        }
-        return Double.parseDouble(sb.toString());
+        if (!response.contains("200 OK"))
+            return 0.0;
+
+        String temp = response.split("GMTConnection: close")[1];
+        return Double.parseDouble(temp);
     }
 }

@@ -47,13 +47,12 @@ public class SensorTypesImpl implements SensorTypes {
                 return "cm";
             case Sensor.TYPE_GAME_ROTATION_VECTOR:
             case Sensor.TYPE_ROTATION_VECTOR:
-                return "no unit";
+                return "";
             case Sensor.TYPE_RELATIVE_HUMIDITY:
                 return "%";
             case Sensor.TYPE_AMBIENT_TEMPERATURE:
                 return "°C";
-
-        }
-       return null;
+            }
+       return "";
     }
 }
