@@ -18,6 +18,7 @@ public class FlashlightResource extends Resource {
 
     private boolean hasFlashlight;
     private String html;
+    private Camera camera;
 
     public FlashlightResource(URI uri, boolean hasFlashlight) {
         super(uri);
@@ -51,16 +52,7 @@ public class FlashlightResource extends Resource {
             return HttpResponse.generateResponse("200 OK", html + "<p>Device has no camera.</p>");
 
         String stateString = request.content.get("state");
-
-        int cameraId = 0;
-        for (int camNo = 0; camNo < Camera.getNumberOfCameras(); camNo++) {
-            Camera.CameraInfo camInfo = new Camera.CameraInfo();
-            Camera.getCameraInfo(camNo, camInfo);
-            if (camInfo.facing == (Camera.CameraInfo.CAMERA_FACING_BACK))
-                cameraId = camNo;
-        }
-
-        Camera camera = Camera.open(cameraId);
+        initCamera();
         Camera.Parameters p = camera.getParameters();
         String info;
         if ("On".equals(stateString)) {
@@ -78,11 +70,32 @@ public class FlashlightResource extends Resource {
             p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
             camera.setParameters(p);
             camera.stopPreview();
-            camera.release();
+            releaseCamera();
             info = "<p>Device flashlight is now off.</p>";
         } else
             return HttpResponse.generateErrorResponse("400 Bad Request", "State value is neither 'On' nor 'Off'.");
 
         return HttpResponse.generateResponse("200 OK", html + info);
+    }
+
+    void initCamera(){
+        if(camera == null) {
+            int cameraId = 0;
+            for (int camNo = 0; camNo < Camera.getNumberOfCameras(); camNo++) {
+                Camera.CameraInfo camInfo = new Camera.CameraInfo();
+                Camera.getCameraInfo(camNo, camInfo);
+                if (camInfo.facing == (Camera.CameraInfo.CAMERA_FACING_BACK))
+                    cameraId = camNo;
+            }
+
+            camera = Camera.open(cameraId);
+        }
+    }
+
+    void releaseCamera() {
+        if(camera != null){
+            camera.release();
+        }
+        camera = null;
     }
 }

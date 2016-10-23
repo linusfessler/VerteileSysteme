@@ -58,8 +58,10 @@ public class ServerService extends Service {
             rootResource = new RootResource(new URI("/"));
 
             SensorManager manager = (SensorManager) getSystemService(SENSOR_SERVICE);
-            for (Sensor s : manager.getSensorList(Sensor.TYPE_ALL))
-                rootResource.addResource(new SensorResource(new URI(rootResource.getUri().toString() + s.getName().replace(" ", "_")), s, manager));
+            Sensor accelerometerSensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            rootResource.addResource(new SensorResource(new URI(rootResource.getUri().toString() + "Accelerometer_(Sensor)"), accelerometerSensor, manager));
+            Sensor gravitySensor = manager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+            rootResource.addResource(new SensorResource(new URI(rootResource.getUri().toString() + "Gravity_(Sensor)"), gravitySensor, manager));
 
             Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
             rootResource.addResource(new VibratorResource((new URI(rootResource.getUri().toString() + "Vibrator_(Actuator)")), vibrator));
