@@ -120,28 +120,6 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
-    private byte[] createMessage(String type) {
-        try {
-            JSONObject header = new JSONObject();
-            header.put("username", uname);
-            header.put("uuid", uuid);
-            header.put("timestamp", "{}");
-            header.put("type", type);
-
-            JSONObject body = new JSONObject();
-
-            JSONObject root = new JSONObject();
-            root.put("header", header);
-            root.put("body", body);
-
-            return root.toString().getBytes();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     // TODO: Could use JSONObject instead of hardcoded strings
     // This method creates the message (json) for the register packet
     private byte[] createRegisterMessage(){
