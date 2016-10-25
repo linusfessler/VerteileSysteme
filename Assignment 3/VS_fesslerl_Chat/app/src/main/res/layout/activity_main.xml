@@ -21,7 +21,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/join_button"
-        android:layout_below="@+id/uname_input"
+        android:layout_below="@id/uname_input"
         android:onClick="onJoinClicked"/>
+
+    <TextView
+        android:id="@+id/status_textview"
+        android:layout_below="@id/button_join"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>
