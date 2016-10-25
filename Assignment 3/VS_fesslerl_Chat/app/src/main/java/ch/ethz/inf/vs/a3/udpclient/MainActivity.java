@@ -26,12 +26,16 @@ import ch.ethz.inf.vs.a3.message.MessageTypes;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String USERNAME = "Username";
+    // Strings for identifying intent extras
+    public static final String USERNAME = "USERNAME";
     public static final String UUID = "UUID";
+    public static final String IP = "IP";
+    public static final String PORT = "PORT";
+
+    //private DatagramSocket sock;
     private static final String LOG_TAG = "MainActivity";
     private String username;
-    private TextView textview_username;
-    private DatagramSocket sock;
+    private TextView status_textview;
     private String uuid;
     InetAddress toAddr;
     int port;
@@ -44,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
 
         // create UUID
         uuid = java.util.UUID.randomUUID().toString();
+
+        // Init TextView for status messages
+        status_textview = (TextView) findViewById(R.id.status_textview);
     }
 
     @Override
@@ -81,15 +88,23 @@ public class MainActivity extends AppCompatActivity {
         // First: Register at server. If registering is successful: start ChatActivity. Else: display error message.
         connectToServer();
 
+
+    }
+
+    private void onSuccessfulConnection(){
         // Put username and uuid into Intent and start ChatActivity
         Intent toChat = new Intent(this, ChatActivity.class);
         toChat.putExtra(USERNAME, this.username);
         toChat.putExtra(UUID, uuid);
+        toChat.putExtra(IP, toAddr);
+        toChat.putExtra(PORT, port);
         startActivity(toChat);
     }
 
+    private void onUnsuccessfulConnection(){
+        ;
+    }
 
-    // TODO: Execute this code in an AsyncTask
     // Called to connect to server (by sending a registration packet)
     private void connectToServer(){
 
@@ -99,17 +114,20 @@ public class MainActivity extends AppCompatActivity {
 
         // Create new UDP Socket
         try {
-            sock = new DatagramSocket(port);
+//            sock = new DatagramSocket(port);
+            UDPClient.setSocket(new DatagramSocket(port));
         }catch(SocketException e){
             errorDiag("Could not bind socket to port " + port);
             e.printStackTrace();
         }
 
         try {
-            sock.setSoTimeout(NetworkConsts.SOCKET_TIMEOUT);
+//            sock.setSoTimeout(NetworkConsts.SOCKET_TIMEOUT);
+            UDPClient.getSocket().setSoTimeout(NetworkConsts.SOCKET_TIMEOUT);
         } catch (SocketException e) {
             errorDiag("Could not set socket timeout " + NetworkConsts.SOCKET_TIMEOUT);
         }
+
 
         toAddr = getIpFromSettings();
 
@@ -129,34 +147,42 @@ public class MainActivity extends AppCompatActivity {
         byte[] ack_buf = new byte[NetworkConsts.PAYLOAD_SIZE];     // More than enough space for the ack message
         DatagramPacket ack = new DatagramPacket(ack_buf, ack_buf.length);
 
+        // TODO: Execute send in AsyncTask
         try {
-            sock.send(registerPacket);
+//            sock.send(registerPacket);
+            UDPClient.getSocket().send(registerPacket);
         } catch (IOException e) {
             errorDiag("Could not send registration message.");
         }
 
-
+        // TODO: Execute receive in AsyncTask
         // TODO: Repeat the receive operation if timeout is reached (max. 5 times).
         try {
-            sock.receive(ack);
+//            sock.receive(ack);
+            UDPClient.getSocket().receive(ack);
         } catch (SocketTimeoutException te) {
             errorDiag("Socket timeout reached. Retrying...");
+
+            // This needs to be moved when implementing the retrying
+            onUnsuccessfulConnection();
         } catch (IOException e) {
             errorDiag("Could not receive registration ack.");
+            onUnsuccessfulConnection();
         }
 
-        Log.d("RECEIVED", "### " + ack.getData().toString());
-
+        status_textview.setText(ack.getData().toString());
+        onSuccessfulConnection();
 
     }
 
+    // TODO: Use this method at some time (e.g. in onStart, check if is connected. If it is, execute.
     // Called to disconnect from server
     private void disconnectFromServer(){
 
         // TODO: Check if it is necessary to get port and ip value from the settings again
 
         // Check if socket is null.
-        if(sock == null){
+        if(UDPClient.getSocket() == null){
             errorDiag("Socket null");
         }
 
@@ -175,14 +201,14 @@ public class MainActivity extends AppCompatActivity {
         DatagramPacket ack = new DatagramPacket(ack_buf, ack_buf.length);
 
         try {
-            sock.send(deregisterPacket);
+            UDPClient.getSocket().send(deregisterPacket);
         } catch(IOException e) {
             errorDiag("Could not send deregistration message");
         }
 
         // TODO: ?? Repeat this receive operation until timeout is reached (max. 5 times). Not sure if necessary.
         try {
-            sock.receive(ack);
+            UDPClient.getSocket().receive(ack);
         } catch(SocketTimeoutException te){
             errorDiag("Socket timeout reached. Retrying...");
         } catch (IOException e) {

@@ -1,5 +1,6 @@
 package ch.ethz.inf.vs.a3.udpclient;
 
+import java.net.DatagramSocket;
 import java.net.Socket;
 
 /**
@@ -8,13 +9,13 @@ import java.net.Socket;
 
 public class UDPClient {
 
-    private static Socket socket;
+    private static DatagramSocket socket;
 
-    public static synchronized Socket getSocket(){
+    public static synchronized DatagramSocket getSocket(){
         return socket;
     }
 
-    public static synchronized void setSocket(Socket socket){
+    public static synchronized void setSocket(DatagramSocket socket){
         UDPClient.socket = socket;
     }
 
