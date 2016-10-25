@@ -22,6 +22,9 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.UUID;
 
+import ch.ethz.inf.vs.a3.message.Message;
+import ch.ethz.inf.vs.a3.message.MessageTypes;
+
 public class ChatActivity extends AppCompatActivity {
 
     private String uname;
@@ -90,7 +93,12 @@ public class ChatActivity extends AppCompatActivity {
 
 
         // Create Register Packet message
-        byte[] buf = createRegisterMessage();
+        byte[] buf = new byte[0];
+        try {
+            buf = new Message(uname, uuid, "{}", MessageTypes.REGISTER, null).json.getBytes();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         // Build packet
         DatagramPacket registerPacket = new DatagramPacket(buf, 0, buf.length, toAddr, port);
@@ -122,7 +130,7 @@ public class ChatActivity extends AppCompatActivity {
 
     // TODO: Could use JSONObject instead of hardcoded strings
     // This method creates the message (json) for the register packet
-    private byte[] createRegisterMessage(){
+    /*private byte[] createRegisterMessage(){
 
         StringBuilder sb = new StringBuilder();
 
@@ -139,7 +147,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
         return sb.toString().getBytes();
-    }
+    }*/
 
     // Called to disconnect from server
     private void disconnectFromServer(){
@@ -152,7 +160,12 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         // Create packet
-        byte[] buf = createDeregisterMessage();
+        byte[] buf = new byte[0];
+        try {
+            buf = new Message(uname, uuid, "{}", MessageTypes.REGISTER, null).json.getBytes();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         DatagramPacket deregisterPacket = new DatagramPacket(buf, buf.length, toAddr, port);
 
@@ -181,7 +194,7 @@ public class ChatActivity extends AppCompatActivity {
 
     // TODO: Could use JSONObject instead of hardcoded strings
     // This method creates the message (jsoon) for the deregister packet
-    private byte[] createDeregisterMessage(){
+    /*private byte[] createDeregisterMessage(){
 
         StringBuilder sb = new StringBuilder();
 
@@ -197,7 +210,7 @@ public class ChatActivity extends AppCompatActivity {
         sb.append("}");
 
         return sb.toString().getBytes();
-    }
+    }*/
 
     // TODO: Actually get the port from settings.
     private int getPortFromSettings(){
