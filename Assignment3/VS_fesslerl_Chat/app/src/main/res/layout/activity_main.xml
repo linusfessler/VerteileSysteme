@@ -24,5 +24,4 @@
         android:layout_below="@+id/uname_input"
         android:onClick="onJoinClicked"/>
 
-
 </RelativeLayout>
