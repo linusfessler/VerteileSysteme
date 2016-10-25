@@ -54,20 +54,17 @@ public class ChatActivity extends AppCompatActivity {
     protected void onStart(){
         super.onStart();
         connectToServer();
-
-        //TODO: move this method call to onStop(). Only used here for testing
-        disconnectFromServer();
     }
 
     // Implement connection tear-down here.
     @Override
     protected void onStop(){
         super.onStop();
-//        disconnectFromServer();
+        disconnectFromServer();
     }
 
-
-
+    // TODO: Execute this code in an AsyncTask
+    // Called to connect to server (by sending a registration packet)
     private void connectToServer(){
 
         port = getPortFromSettings();
@@ -120,6 +117,7 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
+    // TODO: Could use JSONObject instead of hardcoded strings
     // This method creates the message (json) for the register packet
     private byte[] createRegisterMessage(){
 
@@ -140,6 +138,7 @@ public class ChatActivity extends AppCompatActivity {
         return sb.toString().getBytes();
     }
 
+    // Called to disconnect from server
     private void disconnectFromServer(){
 
         // TODO: Check if it is necessary to get port and ip value from the settings again
@@ -177,7 +176,8 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
-    //This method creates the message (jsoon) for the deregister packet
+    // TODO: Could use JSONObject instead of hardcoded strings
+    // This method creates the message (jsoon) for the deregister packet
     private byte[] createDeregisterMessage(){
 
         StringBuilder sb = new StringBuilder();
