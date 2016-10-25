@@ -162,7 +162,7 @@ public class ChatActivity extends AppCompatActivity {
         // Create packet
         byte[] buf = new byte[0];
         try {
-            buf = new Message(uname, uuid, "{}", MessageTypes.REGISTER, null).json.getBytes();
+            buf = new Message(uname, uuid, "{}", MessageTypes.DEREGISTER, null).json.getBytes();
         } catch (JSONException e) {
             e.printStackTrace();
         }
