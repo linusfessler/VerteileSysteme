@@ -14,12 +14,10 @@ public class ChatActivity extends AppCompatActivity {
 
     private String username;
     private String uuid;
-
     private DatagramSocket socket;
+    private PriorityQueue<Message> buffer = new PriorityQueue<Message>();
 
     private TextView usernameText;
-
-    private PriorityQueue<Message> buffer = new PriorityQueue<Message>();
 
     private final static String LOG_TAG = "ChatActivity";
 

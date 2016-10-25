@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         // create UUID
         uuid = java.util.UUID.randomUUID().toString();
     }
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    // Execute when user klicks on Settings menu
+    // Execute when user clicks on Settings menu
     public void onSettingsClicked(MenuItem Item){
         Intent toSettings = new Intent(this, SettingsActivity.class);
         startActivity(toSettings);
@@ -65,29 +64,28 @@ public class MainActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "### Clicked Join");
 
         // Get username from text input
-        EditText uname_input = (EditText) findViewById(R.id.uname_input);
-        String uname = uname_input.getText().toString();
+        EditText username_input = (EditText) findViewById(R.id.uname_input);
+        username = username_input.getText().toString();
 
         // If username is invalid, use default username
-        if(uname.isEmpty() || uname == null){
-            uname = getString(R.string.default_username);
+        if(username.isEmpty() || username == null) {
+            username = getString(R.string.default_username);
         }
 
-        Log.d(LOG_TAG, "### Username: " + uname);
+        Log.d(LOG_TAG, "### Username: " + username);
 
         // Only use first line as username
-        String[] temp = uname.split("\n", 2);
-        uname = temp[0];
+        String[] temp = username.split("\n", 2);
+        username = temp[0];
 
         // First: Register at server. If registering is successful: start ChatActivity. Else: display error message.
         connectToServer();
 
-
         // Put username and uuid into Intent and start ChatActivity
-//        Intent toChat = new Intent(this, ChatActivity.class);
-//        toChat.putExtra(USERNAME, username);
-//        toChat.putExtra(UUID_TAG, uuid);
-//        startActivity(toChat);
+        Intent toChat = new Intent(this, ChatActivity.class);
+        toChat.putExtra(USERNAME, this.username);
+        toChat.putExtra(UUID, uuid);
+        startActivity(toChat);
     }
 
 
