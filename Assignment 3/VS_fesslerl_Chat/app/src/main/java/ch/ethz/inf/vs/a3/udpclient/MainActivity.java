@@ -26,11 +26,15 @@ import ch.ethz.inf.vs.a3.message.MessageTypes;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String USERNAME = "Username";
+    // Strings for identifying intent extras
+    public static final String USERNAME = "USERNAME";
     public static final String UUID = "UUID";
+    public static final String IP = "IP";
+    public static final String PORT = "PORT";
+
     private static final String LOG_TAG = "MainActivity";
     private String username;
-    private TextView textview_username;
+    private TextView status_textview;
     private DatagramSocket sock;
     private String uuid;
     InetAddress toAddr;
@@ -44,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
 
         // create UUID
         uuid = java.util.UUID.randomUUID().toString();
+
+        // Init TextView for status messages
+        status_textview = (TextView) findViewById(R.id.status_textview);
     }
 
     @Override
@@ -75,19 +82,28 @@ public class MainActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "### Username: " + username);
 
         // Only use first line as username
-        String[] temp = username.split("\n", 2);
+        String[] temp = username.split("\n", 2);    
         username = temp[0];
 
         // First: Register at server. If registering is successful: start ChatActivity. Else: display error message.
         connectToServer();
 
+
+    }
+
+    private void onSuccessfulConnection(){
         // Put username and uuid into Intent and start ChatActivity
         Intent toChat = new Intent(this, ChatActivity.class);
         toChat.putExtra(USERNAME, this.username);
         toChat.putExtra(UUID, uuid);
+        toChat.putExtra(IP, toAddr);
+        toChat.putExtra(PORT, port);
         startActivity(toChat);
     }
 
+    private void onUnsuccessfulConnection(){
+        ;
+    }
 
     // TODO: Execute this code in an AsyncTask
     // Called to connect to server (by sending a registration packet)
@@ -141,15 +157,20 @@ public class MainActivity extends AppCompatActivity {
             sock.receive(ack);
         } catch (SocketTimeoutException te) {
             errorDiag("Socket timeout reached. Retrying...");
+
+            // This needs to be moved when implementing the retrying
+            onUnsuccessfulConnection();
         } catch (IOException e) {
             errorDiag("Could not receive registration ack.");
+            onUnsuccessfulConnection();
         }
 
-        Log.d("RECEIVED", "### " + ack.getData().toString());
-
+        status_textview.setText(ack.getData().toString());
+        onSuccessfulConnection();
 
     }
 
+    // TODO: Use this method at some time (e.g. in onStart, check if is connected. If it is, execute.
     // Called to disconnect from server
     private void disconnectFromServer(){
 
