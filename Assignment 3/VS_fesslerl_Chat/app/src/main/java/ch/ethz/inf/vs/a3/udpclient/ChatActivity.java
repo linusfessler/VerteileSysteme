@@ -20,6 +20,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.PriorityQueue;
 import java.util.UUID;
 
 import ch.ethz.inf.vs.a3.message.Message;
@@ -31,8 +32,10 @@ public class ChatActivity extends AppCompatActivity {
     private TextView textview_username;
     private DatagramSocket sock;
     private String uuid;
-    InetAddress toAddr;
-    int port;
+    private InetAddress toAddr;
+    private int port;
+
+    private PriorityQueue<Message> buffer = new PriorityQueue<Message>();
 
     private final static String LOG_TAG = "ChatActivity";
 
