@@ -30,7 +30,7 @@ import ch.ethz.inf.vs.a3.message.MessageTypes;
 public class MainActivity extends AppCompatActivity {
 
     public static final String UNAME = "USERNAME";
-    public static final String UUID_TAG = "UUID_TAG";
+    public static final String UUID_TAG = "UUID";
     private static final String LOG_TAG = "MainActivity";
     private String uname;
     private TextView textview_username;
@@ -98,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
     // Called to connect to server (by sending a registration packet)
     private void connectToServer(){
 
+        Log.d(LOG_TAG, "### Starting connection process");
+
         port = getPortFromSettings();
 
         // Create new UDP Socket
@@ -118,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Create Register Packet message
-        byte[] buf = new byte[0];
+        byte[] buf = new byte[NetworkConsts.PAYLOAD_SIZE];
         try {
             buf = new Message(uname, uuid, null, MessageTypes.REGISTER, null).json.getBytes();
         } catch (JSONException e) {
@@ -129,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         DatagramPacket registerPacket = new DatagramPacket(buf, 0, buf.length, toAddr, port);
 
         // Create new packet for ack message
-        byte[] ack_buf = new byte[256];     // More than enough space for the ack message
+        byte[] ack_buf = new byte[NetworkConsts.PAYLOAD_SIZE];     // More than enough space for the ack message
         DatagramPacket ack = new DatagramPacket(ack_buf, ack_buf.length);
 
         try {
@@ -152,27 +154,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-    // TODO: Could use JSONObject instead of hardcoded strings
-    // This method creates the message (json) for the register packet
-    /*private byte[] createRegisterMessage(){
-
-        StringBuilder sb = new StringBuilder();
-
-        // Create registration message line by line
-        sb.append("{\n");
-        sb.append("\"header\": {\n");
-        sb.append("\"username\": \"").append(uname).append("\",\n");
-        sb.append("\"uuid\": \"").append(uuid).append("\",\n");
-        sb.append("\"timestamp\": ").append("\"{}\",\n");
-        sb.append("\"type\": ").append("\"register\"\n");
-        sb.append("},\n");
-        sb.append("\"body\": {}\n");
-        sb.append("}");
-
-
-        return sb.toString().getBytes();
-    }*/
 
     // Called to disconnect from server
     private void disconnectFromServer(){
