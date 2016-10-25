@@ -25,8 +25,8 @@ public class ChatActivity extends AppCompatActivity {
     private TextView textview_username;
     private DatagramSocket sock;
     private String uuid;
-
-    private final static String IP_ADDRESS = "10.0.2.2";
+    InetAddress toAddr;
+    int port;
 
     private final static String LOG_TAG = "ChatActivity";
 
@@ -60,38 +60,16 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onStop(){
         super.onStop();
+        disconnectFromServer();
     }
 
+    // TODO: Execute this code in an AsyncTask
+    // Called to connect to server (by sending a registration packet)
     private void connectToServer(){
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-
-        // TODO: Get port value from settings, not from constants.
-        int port = NetworkConsts.UDP_PORT;
-
-
-//        try{
-//            port = Integer.parseInt(preferences.getString("pref_port1234", "0"));
-//        }
-//        catch(NumberFormatException e){
-//            Log.d(LOG_TAG, "#### ERROR: Could not parse integer");
-//            errorDiag(getString(R.string.error_port));
-//            return;
-//        }
-
-        // TODO: Move this part of error handling to SettingsActivity class.
-        // Error if port value is too small or too big
-        if (port < 1025 || port > 65535){
-            Log.d(LOG_TAG, "#### ERROR: Port value not in bounds.");
-            errorDiag(getString(R.string.error_port));
-            return;
-        }
-
-        Log.d(LOG_TAG, "### Reading preferences: Port = " + port);
-
+        port = getPortFromSettings();
 
         // Create new UDP Socket
-
         try {
             sock = new DatagramSocket(port);
         }catch(SocketException e){
@@ -105,14 +83,7 @@ public class ChatActivity extends AppCompatActivity {
             errorDiag("Could not set socket timeout " + NetworkConsts.SOCKET_TIMEOUT);
         }
 
-        // TODO: Get this value from settings
-        String ipString = IP_ADDRESS;
-        InetAddress toAddr = null;
-        try {
-            toAddr = InetAddress.getByName(ipString);
-        } catch (UnknownHostException e) {
-            errorDiag("Could not get IP Address by name " + ipString);
-        }
+        toAddr = getIpFromSettings();
 
 
         // Create Register Packet message
@@ -123,7 +94,6 @@ public class ChatActivity extends AppCompatActivity {
 
         // Create new packet for ack message
         byte[] ack_buf = new byte[256];     // More than enough space for the ack message
-
         DatagramPacket ack = new DatagramPacket(ack_buf, ack_buf.length);
 
         try {
@@ -133,19 +103,22 @@ public class ChatActivity extends AppCompatActivity {
         }
 
 
-        // TODO: Repeat the receave operation 5 times total if timeout reached.
+        // TODO: Repeat the receive operation if timeout is reached (max. 5 times).
         try {
             sock.receive(ack);
         } catch (SocketTimeoutException te) {
             errorDiag("Socket timeout reached. Retrying...");
         } catch (IOException e) {
-            errorDiag("Could not receive registration message.");
+            errorDiag("Could not receive registration ack.");
         }
+
+        Log.d("RECEIVED", "### " + ack.getData().toString());
 
 
     }
 
-
+    // TODO: Could use JSONObject instead of hardcoded strings
+    // This method creates the message (json) for the register packet
     private byte[] createRegisterMessage(){
 
         StringBuilder sb = new StringBuilder();
@@ -161,7 +134,97 @@ public class ChatActivity extends AppCompatActivity {
         sb.append("\"body\": {}\n");
         sb.append("}");
 
+
         return sb.toString().getBytes();
+    }
+
+    // Called to disconnect from server
+    private void disconnectFromServer(){
+
+        // TODO: Check if it is necessary to get port and ip value from the settings again
+
+        // Check if socket is null.
+        if(sock == null){
+            errorDiag("Socket null");
+        }
+
+        // Create packet
+        byte[] buf = createDeregisterMessage();
+
+        DatagramPacket deregisterPacket = new DatagramPacket(buf, buf.length, toAddr, port);
+
+        // Create new packet for ack message
+        byte[] ack_buf = new byte[256];     // More than enough space for the ack message
+        DatagramPacket ack = new DatagramPacket(ack_buf, ack_buf.length);
+
+        try {
+            sock.send(deregisterPacket);
+        } catch(IOException e) {
+            errorDiag("Could not send deregistration message");
+        }
+
+        // TODO: ?? Repeat this receive operation until timeout is reached (max. 5 times). Not sure if necessary.
+        try {
+            sock.receive(ack);
+        } catch(SocketTimeoutException te){
+            errorDiag("Socket timeout reached. Retrying...");
+        } catch (IOException e) {
+            errorDiag("Could not receive deregistration ack.");
+        }
+
+        Log.d(LOG_TAG, "### " + ack.getData().toString());
+
+    }
+
+    // TODO: Could use JSONObject instead of hardcoded strings
+    // This method creates the message (jsoon) for the deregister packet
+    private byte[] createDeregisterMessage(){
+
+        StringBuilder sb = new StringBuilder();
+
+        // Create deregistrateion message line by line
+        sb.append("{\n");
+        sb.append("\"header\": {\n");
+        sb.append("\"username\": \"").append(uname).append("\",\n");
+        sb.append("\"uuid\": \"").append(uuid).append("\",\n");
+        sb.append("\"timestamp\": ").append("\"{}\",\n");
+        sb.append("\"type\": ").append("\"deregister\"\n");
+        sb.append("},\n");
+        sb.append("\"body\": {}\n");
+        sb.append("}");
+
+        return sb.toString().getBytes();
+    }
+
+    // TODO: Actually get the port from settings.
+    private int getPortFromSettings(){
+
+        int result = NetworkConsts.UDP_PORT;
+
+        // TODO: Move this part of error handling to SettingsActivity class.
+        // Error if port value is too small or too big
+        if (result < 1025 || result > 65535){
+            Log.d(LOG_TAG, "#### ERROR: Port value not in bounds.");
+            errorDiag(getString(R.string.error_port));
+            return NetworkConsts.UDP_PORT;
+        }
+
+        return result;
+    }
+
+    // TODO: Actually get the IP from settings.
+    private InetAddress getIpFromSettings(){
+
+        String ipString = NetworkConsts.SERVER_ADDRESS;
+
+        InetAddress addr = null;
+        try {
+            addr = InetAddress.getByName(ipString);
+        } catch (UnknownHostException e) {
+            errorDiag("Could not get IP Address by name " + ipString);
+        }
+
+        return addr;
     }
 
     // TODO: Implement dialog creation for displaying error messages
