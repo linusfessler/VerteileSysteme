@@ -21,13 +21,13 @@ public class Message {
         JSONObject header = new JSONObject();
         header.put("username", username);
         header.put("uuid", uuid);
-        if (timestamp.isEmpty())
+        if (timestamp == null)
             timestamp = "{}";
         header.put("timestamp", timestamp);
         header.put("type", type);
 
         JSONObject body = new JSONObject();
-        if (!content.isEmpty())
+        if (content != null)
             body.put("content", content);
 
         JSONObject root = new JSONObject();

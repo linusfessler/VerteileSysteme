@@ -20,19 +20,16 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.UUID;
-
-import java.net.DatagramSocket;
 
 import ch.ethz.inf.vs.a3.message.Message;
 import ch.ethz.inf.vs.a3.message.MessageTypes;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String UNAME = "USERNAME";
-    public static final String UUID_TAG = "UUID";
+    public static final String USERNAME = "Username";
+    public static final String UUID = "UUID";
     private static final String LOG_TAG = "MainActivity";
-    private String uname;
+    private String username;
     private TextView textview_username;
     private DatagramSocket sock;
     private String uuid;
@@ -47,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // create UUID
-        uuid = UUID.randomUUID().toString();
+        uuid = java.util.UUID.randomUUID().toString();
     }
 
     @Override
@@ -88,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Put username and uuid into Intent and start ChatActivity
 //        Intent toChat = new Intent(this, ChatActivity.class);
-//        toChat.putExtra(UNAME, uname);
+//        toChat.putExtra(USERNAME, username);
 //        toChat.putExtra(UUID_TAG, uuid);
 //        startActivity(toChat);
     }
@@ -122,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         // Create Register Packet message
         byte[] buf = new byte[NetworkConsts.PAYLOAD_SIZE];
         try {
-            buf = new Message(uname, uuid, null, MessageTypes.REGISTER, null).json.getBytes();
+            buf = new Message(username, uuid, null, MessageTypes.REGISTER, null).json.getBytes();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -168,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         // Create packet
         byte[] buf = new byte[0];
         try {
-            buf = new Message(uname, uuid, null, MessageTypes.DEREGISTER, null).json.getBytes();
+            buf = new Message(username, uuid, null, MessageTypes.DEREGISTER, null).json.getBytes();
         } catch (JSONException e) {
             e.printStackTrace();
         }
