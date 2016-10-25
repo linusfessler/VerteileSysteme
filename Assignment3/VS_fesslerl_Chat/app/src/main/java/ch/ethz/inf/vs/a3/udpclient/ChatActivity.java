@@ -9,20 +9,24 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.UUID;
 
 public class ChatActivity extends AppCompatActivity {
 
     private String uname;
     private TextView textview_username;
     private DatagramSocket sock;
+    private String uuid;
 
-    private final static String IP_ADDRESS = "192.168.1.1";
+    private final static String IP_ADDRESS = "10.0.2.2";
 
     private final static String LOG_TAG = "ChatActivity";
 
@@ -40,6 +44,9 @@ public class ChatActivity extends AppCompatActivity {
 
         textview_username = (TextView) findViewById(R.id.text_username);
         textview_username.setText(uname);
+
+        // create UUID
+        uuid = UUID.randomUUID().toString();
     }
 
     // Implement connection establishment here.
@@ -98,8 +105,6 @@ public class ChatActivity extends AppCompatActivity {
             errorDiag("Could not set socket timeout " + NetworkConsts.SOCKET_TIMEOUT);
         }
 
-        byte[] buf = createRegisterPacket();
-
         // TODO: Get this value from settings
         String ipString = IP_ADDRESS;
         InetAddress toAddr = null;
@@ -109,15 +114,54 @@ public class ChatActivity extends AppCompatActivity {
             errorDiag("Could not get IP Address by name " + ipString);
         }
 
+
+        // Create Register Packet message
+        byte[] buf = createRegisterMessage();
+
         // Build packet
         DatagramPacket registerPacket = new DatagramPacket(buf, 0, buf.length, toAddr, port);
+
+        // Create new packet for ack message
+        byte[] ack_buf = new byte[256];     // More than enough space for the ack message
+
+        DatagramPacket ack = new DatagramPacket(ack_buf, ack_buf.length);
+
+        try {
+            sock.send(registerPacket);
+        } catch (IOException e) {
+            errorDiag("Could not send registration message.");
+        }
+
+
+        // TODO: Repeat the receave operation 5 times total if timeout reached.
+        try {
+            sock.receive(ack);
+        } catch (SocketTimeoutException te) {
+            errorDiag("Socket timeout reached. Retrying...");
+        } catch (IOException e) {
+            errorDiag("Could not receive registration message.");
+        }
 
 
     }
 
-    // TODO: Actually build a resistration packet
-    private byte[] createRegisterPacket(){
-        return "Placeholder".getBytes();
+
+    private byte[] createRegisterMessage(){
+
+        StringBuilder sb = new StringBuilder();
+
+        // Create registration message line by line
+        sb.append("{\n");
+        sb.append("\"header\": {\n");
+        sb.append("\"username\": \"").append(uname).append("\",\n");
+        sb.append("\"uuid\": \"").append(uuid).append("\",\n");
+        sb.append("\"timestamp\": ").append("\"{}\",\n");
+        sb.append("\"type\": ").append("\"register\"\n");
+        sb.append("},\n");
+        sb.append("\"body\": {}\n");
+        sb.append("}");
+
+        return sb.toString().getBytes();
     }
 
     // TODO: Implement dialog creation for displaying error messages
