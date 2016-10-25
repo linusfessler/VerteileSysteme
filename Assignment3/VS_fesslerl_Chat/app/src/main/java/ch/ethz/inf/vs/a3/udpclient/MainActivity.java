@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import java.net.DatagramSocket;
+
 public class MainActivity extends AppCompatActivity {
 
     public static final String UNAME = "USERNAME";
@@ -42,6 +44,13 @@ public class MainActivity extends AppCompatActivity {
         EditText uname_input = (EditText) findViewById(R.id.uname_input);
         String uname = uname_input.getText().toString();
 
+        // If username is invalid, use default username
+        if(uname.isEmpty() || uname == null){
+            uname = getString(R.string.default_username);
+        }
+
+        Log.d(LOG_TAG, "### Username: " + uname);
+
         // Only use first line as username
         String[] temp = uname.split("\n", 2);
         uname = temp[0];
@@ -50,4 +59,5 @@ public class MainActivity extends AppCompatActivity {
         toChat.putExtra(UNAME, uname);
         startActivity(toChat);
     }
+
 }

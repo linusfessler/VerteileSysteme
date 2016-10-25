@@ -5,6 +5,7 @@
     <string name="title_activity_settings">Settings</string>
     <string name="settings_button">Settings</string>
     <string name="connecting">Connecting</string>
+    <string name="default_username">Anonymous</string>
 
     <!-- Strings for Settings -->
 
@@ -12,5 +13,9 @@
     <string name="pref_default_ip">10.0.2.2</string>
     <string name="pref_title_port">Server Port</string>
     <string name="pref_default_port">4446</string>
+
+    <!--Error messages-->
+
+    <string name="error_port">The Port value in your settings is not a valid number. Please change your settings and use a valid port number. ( &gt; 1024, &lt; 65536)</string>
 
 </resources>
