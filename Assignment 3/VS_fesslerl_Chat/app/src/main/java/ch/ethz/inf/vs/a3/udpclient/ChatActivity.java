@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -115,6 +118,28 @@ public class ChatActivity extends AppCompatActivity {
         Log.d("RECEIVED", "### " + ack.getData().toString());
 
 
+    }
+
+    private byte[] createMessage(String type) {
+        try {
+            JSONObject header = new JSONObject();
+            header.put("username", uname);
+            header.put("uuid", uuid);
+            header.put("timestamp", "{}");
+            header.put("type", type);
+
+            JSONObject body = new JSONObject();
+
+            JSONObject root = new JSONObject();
+            root.put("header", header);
+            root.put("body", body);
+
+            return root.toString().getBytes();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     // TODO: Could use JSONObject instead of hardcoded strings
@@ -232,5 +257,4 @@ public class ChatActivity extends AppCompatActivity {
     private void errorDiag(String message){
         Log.d(LOG_TAG, "#### ERROR: " + message);
     }
-
 }
