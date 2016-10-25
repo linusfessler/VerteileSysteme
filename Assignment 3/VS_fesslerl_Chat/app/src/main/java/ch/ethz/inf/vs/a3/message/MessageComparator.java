@@ -17,5 +17,4 @@ public class MessageComparator implements Comparator<Message> {
         clock2.setClockFromString(message2.timestamp);
         return clock1.happenedBefore(clock2) ? -1 : 1;
     }
-
 }

@@ -45,8 +45,7 @@ public class ChatActivity extends AppCompatActivity {
         }
         port = getIntent().getIntExtra(MainActivity.PORT, NetworkConsts.UDP_PORT);
 
-        usernameText = (TextView) findViewById(R.id.txt_username);
-        usernameText.setText(username);
+        setTitle("Distributed Chat, connected as " + username);
 
         socket = UDPClient.getSocket();
     }

@@ -12,7 +12,7 @@ public final class NetworkConsts {
      *
      * This address is for the emulator.
      */
-    public static String SERVER_ADDRESS = "10.0.2.2";
+    public static String SERVER_ADDRESS = "192.168.1.121";//"10.0.2.2";
 
     /**
      * Size of UDP payload in bytes
