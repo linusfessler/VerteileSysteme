@@ -75,9 +75,8 @@ public class MainActivity extends AppCompatActivity {
         username = username_input.getText().toString();
 
         // If username is invalid, use default username
-        if(username.isEmpty() || username == null) {
+        if (username.isEmpty() || username == null)
             username = getString(R.string.default_username);
-        }
 
         Log.d(LOG_TAG, "### Username: " + username);
 
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         Intent toChat = new Intent(this, ChatActivity.class);
         toChat.putExtra(USERNAME, this.username);
         toChat.putExtra(UUID, uuid);
-        toChat.putExtra(IP, toAddr);
+        toChat.putExtra(IP, toAddr.getHostAddress());
         toChat.putExtra(PORT, port);
         startActivity(toChat);
     }

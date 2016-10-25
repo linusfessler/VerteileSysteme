@@ -7,19 +7,25 @@
     android:layout_height="match_parent"
     tools:context="ch.ethz.inf.vs.a3.udpclient.ChatActivity">
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </ListView>
-
     <TextView
-        android:id="@+id/text_username"
+        android:id="@+id/txt_username"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_weight="0.05"
+        android:gravity="center" />
 
-    <!--Button
-        android:id="@+id/btn_receive_"
+    <ListView
+        android:id="@+id/list_chat_log"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" /-->
+        android:layout_height="wrap_content"
+        android:layout_weight="0.9" />
+
+    <Button
+        android:id="@+id/btn_retrieve_chat_log"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.05"
+        android:text="@string/btn_retrieve_chat_log"
+        android:onClick="onRetrieveChatLogClicked" />
 
 </LinearLayout>

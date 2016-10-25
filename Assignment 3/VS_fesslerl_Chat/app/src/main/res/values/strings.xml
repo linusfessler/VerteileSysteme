@@ -6,6 +6,7 @@
     <string name="settings_button">Settings</string>
     <string name="connecting">Connecting</string>
     <string name="default_username">Anonymous</string>
+    <string name="btn_retrieve_chat_log">Retreive chat log</string>
 
     <!-- Strings for Settings -->
 
