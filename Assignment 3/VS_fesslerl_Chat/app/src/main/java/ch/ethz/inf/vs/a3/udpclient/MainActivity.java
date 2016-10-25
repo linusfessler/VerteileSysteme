@@ -1,6 +1,7 @@
 package ch.ethz.inf.vs.a3.udpclient;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String UUID = "UUID";
     public static final String IP = "IP";
     public static final String PORT = "PORT";
+    public static final int ATTEMPTS = 5;
 
     //private DatagramSocket sock;
     private static final String LOG_TAG = "MainActivity";
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void onSuccessfulConnection(){
+    private void onSuccessfulConnection(String ackMessage){
         // Put username and uuid into Intent and start ChatActivity
         Intent toChat = new Intent(this, ChatActivity.class);
         toChat.putExtra(USERNAME, this.username);
@@ -114,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Create new UDP Socket
         try {
-//            sock = new DatagramSocket(port);
             UDPClient.setSocket(new DatagramSocket(port));
         }catch(SocketException e){
             errorDiag("Could not bind socket to port " + port);
@@ -122,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         try {
-//            sock.setSoTimeout(NetworkConsts.SOCKET_TIMEOUT);
             UDPClient.getSocket().setSoTimeout(NetworkConsts.SOCKET_TIMEOUT);
         } catch (SocketException e) {
             errorDiag("Could not set socket timeout " + NetworkConsts.SOCKET_TIMEOUT);
@@ -143,35 +143,8 @@ public class MainActivity extends AppCompatActivity {
         // Build packet
         DatagramPacket registerPacket = new DatagramPacket(buf, 0, buf.length, toAddr, port);
 
-        // Create new packet for ack message
-        byte[] ack_buf = new byte[NetworkConsts.PAYLOAD_SIZE];     // More than enough space for the ack message
-        DatagramPacket ack = new DatagramPacket(ack_buf, ack_buf.length);
 
-        // TODO: Execute send in AsyncTask
-        try {
-//            sock.send(registerPacket);
-            UDPClient.getSocket().send(registerPacket);
-        } catch (IOException e) {
-            errorDiag("Could not send registration message.");
-        }
-
-        // TODO: Execute receive in AsyncTask
-        // TODO: Repeat the receive operation if timeout is reached (max. 5 times).
-        try {
-//            sock.receive(ack);
-            UDPClient.getSocket().receive(ack);
-        } catch (SocketTimeoutException te) {
-            errorDiag("Socket timeout reached. Retrying...");
-
-            // This needs to be moved when implementing the retrying
-            onUnsuccessfulConnection();
-        } catch (IOException e) {
-            errorDiag("Could not receive registration ack.");
-            onUnsuccessfulConnection();
-        }
-
-        status_textview.setText(ack.getData().toString());
-        onSuccessfulConnection();
+        new RegisterSendTask().execute(registerPacket);
 
     }
 
@@ -257,5 +230,83 @@ public class MainActivity extends AppCompatActivity {
     private void errorDiag(String message){
         Log.d(LOG_TAG, "#### ERROR: " + message);
     }
+
+
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    // Nest this AsyncTask class so that it can access the GUI
+    private class RegisterSendTask extends AsyncTask<DatagramPacket, String, String> {
+
+        // TODO: Use this method to display connection establishment
+        // Use this to somehow display that a connection is being established (change Join button to Connect... or use Status Textview, ...)
+        @Override
+        protected void onPreExecute(){
+            status_textview.setText("\n Starting Connection Process...");
+        }
+
+        @Override
+        protected String doInBackground(DatagramPacket... dps){
+
+            // Maybe use publishProcess(Integer...) for number of connection attempt. (fancy)
+
+            // Check if there is at least one DatagramPacket in the array
+            if(dps.length <= 0){
+                this.cancel(false);
+            }
+
+            // Check if socket is valid
+            if(UDPClient.getSocket() == null){
+                this.cancel(false);
+            }
+
+            // Try sending the packet
+            try {
+                UDPClient.getSocket().send(dps[0]);
+            } catch (IOException e) {
+                this.cancel(false);
+            }
+
+            // Create new packet for ack message
+            byte[] ack_buf = new byte[NetworkConsts.PAYLOAD_SIZE];     // More than enough space for the ack message
+            DatagramPacket ack = new DatagramPacket(ack_buf, ack_buf.length);
+
+            // TODO: Repeat the receive operation if timeout is reached (max. 5 times).
+            // Try receiving an answer
+            try {
+                publishProgress("Try # " + 1);
+                UDPClient.getSocket().receive(ack);
+            } catch (SocketTimeoutException te) {
+                // Remove this when trying to connect multiple times
+                this.cancel(false);
+            } catch (IOException e) {
+                this.cancel(false);
+            }
+
+
+            return (new String(ack.getData()));
+        }
+
+        @Override
+        protected void onProgressUpdate(String... strings){
+            status_textview.append("\n" + strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            status_textview.append("\nReply:\n" + result);
+            onSuccessfulConnection(result);
+        }
+
+        // Cancel if socket is null or if no answer was received after 5 attempts
+        @Override
+        protected void onCancelled(){
+            status_textview.append("\nERROR: Could not connect.");
+            onUnsuccessfulConnection();
+        }
+    }
+
+
+
 
 }
