@@ -21,6 +21,8 @@ public class Message {
         JSONObject header = new JSONObject();
         header.put("username", username);
         header.put("uuid", uuid);
+        if (timestamp.isEmpty())
+            timestamp = "{}";
         header.put("timestamp", timestamp);
         header.put("type", type);
 
