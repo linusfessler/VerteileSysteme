@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MainActivity";
     private String username;
     private TextView status_textview;
+    private Button joinButton;
     private String uuid;
     InetAddress toAddr;
     int port;
@@ -53,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Init TextView for status messages
         status_textview = (TextView) findViewById(R.id.status_textview);
+
+        // Init button to change text and block
+        joinButton = (Button) findViewById(R.id.button_join);
     }
 
     @Override
@@ -94,13 +99,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onSuccessfulConnection(String ackMessage){
+
+        // TODO: Delete this function call. Only used for testing
+        disconnectFromServer();
+
         // Put username and uuid into Intent and start ChatActivity
-        Intent toChat = new Intent(this, ChatActivity.class);
-        toChat.putExtra(USERNAME, this.username);
-        toChat.putExtra(UUID, uuid);
-        toChat.putExtra(IP, toAddr);
-        toChat.putExtra(PORT, port);
-        startActivity(toChat);
+//        Intent toChat = new Intent(this, ChatActivity.class);
+//        toChat.putExtra(USERNAME, this.username);
+//        toChat.putExtra(UUID, uuid);
+//        toChat.putExtra(IP, toAddr);
+//        toChat.putExtra(PORT, port);
+//        startActivity(toChat);
     }
 
     private void onUnsuccessfulConnection(){
@@ -243,12 +252,20 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute(){
             status_textview.setText("\n Starting Connection Process...");
+
+            // Change buttton text and disable to prevent errors
+            joinButton.setText(R.string.connecting);
+            joinButton.setEnabled(false);
+
         }
 
         @Override
         protected String doInBackground(DatagramPacket... dps){
 
-            // Maybe use publishProcess(Integer...) for number of connection attempt. (fancy)
+            // Message object for buffering received ack
+            Message recAck = null;
+            String ackString = null;
+            boolean success = false;
 
             // Check if there is at least one DatagramPacket in the array
             if(dps.length <= 0){
@@ -260,10 +277,100 @@ public class MainActivity extends AppCompatActivity {
                 this.cancel(false);
             }
 
-            // Try sending the packet
-            try {
-                UDPClient.getSocket().send(dps[0]);
-            } catch (IOException e) {
+            // Create new packet for ack message
+            byte[] ack_buf = new byte[NetworkConsts.PAYLOAD_SIZE];     // More than enough space for the ack message
+            DatagramPacket ack = new DatagramPacket(ack_buf, ack_buf.length);
+
+            // TODO: Repeat the receive operation if timeout is reached (max. 5 times).
+            // Try receiving an answer
+            for(int i = 0; i < ATTEMPTS && !success; i++)
+            {
+                // Try sending the packet
+                try {
+                    UDPClient.getSocket().send(dps[0]);
+                } catch (IOException e) {
+                    this.cancel(false);
+                }
+
+                // Try receiving the packet
+                try {
+                    publishProgress("Try # " + i+1);
+                    UDPClient.getSocket().receive(ack);
+                } catch (SocketTimeoutException te) {
+                    // Remove this when trying to connect multiple times
+                    publishProgress("Timeout.");
+                    if (i == 4)
+                        cancel(false);
+                } catch (IOException e) {
+                    this.cancel(false);
+                }
+
+                // Abort loop if correct message has been received.
+                ackString = new String(ack.getData());
+                if(!ackString.isEmpty()){
+                    try {
+                        recAck = new Message(ackString);
+                        if(recAck.type.equals(MessageTypes.ACK_MESSAGE)){
+                            success = true;
+                        }
+                    } catch (JSONException e) {
+                        // No valid JSON answer
+                        ;
+                    }
+                }
+            }
+
+            return (new String(ack.getData()));
+        }
+
+        @Override
+        protected void onProgressUpdate(String... strings){
+            status_textview.append("\n" + strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            // Revert button text and reenable
+            joinButton.setText(R.string.join_button);
+            joinButton.setEnabled(true);
+
+            status_textview.append("\nReceived Ack from Server. Client is registered.");
+            onSuccessfulConnection(result);
+        }
+
+        // Cancel if socket is null or if no answer was received after 5 attempts
+        @Override
+        protected void onCancelled(){
+
+            // Revert button text and reenable
+            joinButton.setText(R.string.join_button);
+            joinButton.setEnabled(true);
+
+            status_textview.append("\nERROR: Could not connect to server.");
+            onUnsuccessfulConnection();
+        }
+    }
+
+    private class DeregisterSendTask extends AsyncTask<DatagramPacket, String, String> {
+
+        // TODO: Use this method to display connection establishment
+        // Use this to somehow display that a connection is being established (change Join button to Connect... or use Status Textview, ...)
+        @Override
+        protected void onPreExecute(){
+            status_textview.setText("\n Starting Connection Process...");
+        }
+
+        @Override
+        protected String doInBackground(DatagramPacket... dps){
+
+            // Check if there is at least one DatagramPacket in the array
+            if(dps.length <= 0){
+                this.cancel(false);
+            }
+
+            // Check if socket is valid
+            if(UDPClient.getSocket() == null){
                 this.cancel(false);
             }
 
@@ -273,16 +380,28 @@ public class MainActivity extends AppCompatActivity {
 
             // TODO: Repeat the receive operation if timeout is reached (max. 5 times).
             // Try receiving an answer
-            try {
-                publishProgress("Try # " + 1);
-                UDPClient.getSocket().receive(ack);
-            } catch (SocketTimeoutException te) {
-                // Remove this when trying to connect multiple times
-                this.cancel(false);
-            } catch (IOException e) {
-                this.cancel(false);
-            }
+            for(int i = 0; i < ATTEMPTS; i++)
+            {
+                // Try sending the packet
+                try {
+                    UDPClient.getSocket().send(dps[0]);
+                } catch (IOException e) {
+                    this.cancel(false);
+                }
 
+                // Try receiving the packet
+                try {
+                    publishProgress("Try # " + i);
+                    UDPClient.getSocket().receive(ack);
+                } catch (SocketTimeoutException te) {
+                    // Remove this when trying to connect multiple times
+                    publishProgress("Timeout.");
+                    if (i == 4)
+                        cancel(false);
+                } catch (IOException e) {
+                    this.cancel(false);
+                }
+            }
 
             return (new String(ack.getData()));
         }
@@ -301,12 +420,10 @@ public class MainActivity extends AppCompatActivity {
         // Cancel if socket is null or if no answer was received after 5 attempts
         @Override
         protected void onCancelled(){
-            status_textview.append("\nERROR: Could not connect.");
+            status_textview.append("\nERROR: Could not connect to server.");
             onUnsuccessfulConnection();
         }
     }
-
-
 
 
 }
