@@ -55,6 +55,10 @@ public class Message {
 
         // Content only exists for error and text message, will throw exception sometimes
         JSONObject body = root.getJSONObject("body");
-        this.content = body.getString("content");
+
+        if(body.toString().equals("{}"))
+            this.content = "";
+        else
+            this.content = body.getString("content");
     }
 }
