@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private String username;
     private TextView status_textview;
     private Button joinButton;
+    private Button leaveButton;
     private String uuid;
     InetAddress toAddr;
     int port;
@@ -58,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Init button to change text and block
         joinButton = (Button) findViewById(R.id.button_join);
+        leaveButton= (Button) findViewById(R.id.button_leave);
+
     }
 
     @Override
@@ -163,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         DatagramPacket registerPacket = new DatagramPacket(buf, 0, buf.length, toAddr, port);
 
 
-        new RegisterSendTask().execute(registerPacket);
+        new RegisterTask().execute(registerPacket);
 
     }
 
@@ -190,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
         // Build packet
         DatagramPacket deregisterPacket = new DatagramPacket(buf, buf.length, toAddr, port);
 
-        new DeregisterSendTask().execute(deregisterPacket);
+        new DeregisterTask().execute(deregisterPacket);
 
     }
 
@@ -238,16 +241,17 @@ public class MainActivity extends AppCompatActivity {
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     // Nest this AsyncTask class so that it can access the GUI
-    private class RegisterSendTask extends AsyncTask<DatagramPacket, String, String> {
+    private class RegisterTask extends AsyncTask<DatagramPacket, String, String> {
 
         // Use this to somehow display that a connection is being established (change Join button to Connect... or use Status Textview, ...)
         @Override
         protected void onPreExecute(){
             status_textview.setText("\n Starting registration process...");
 
-            // Change button text and disable to prevent errors
-            joinButton.setText(R.string.connecting);
+            // Change button text and disable leave button to prevent errors
+            joinButton.setText(R.string.joining);
             joinButton.setEnabled(false);
+            leaveButton.setEnabled(false);
 
         }
 
@@ -305,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     } catch (JSONException e) {
                         // No valid JSON answer
-                        ;
+                        e.printStackTrace();
                     }
                 }
             }
@@ -322,8 +326,9 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
 
             // Revert button text and reenable
-            joinButton.setText(R.string.join_button);
+            joinButton.setText(R.string.join);
             joinButton.setEnabled(true);
+            leaveButton.setEnabled(true);
 
             status_textview.append("\nReceived Ack from Server. Client is registered.");
             onSuccessfulRegistration(result);
@@ -333,9 +338,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onCancelled(){
 
-            // Revert button text and reenable
-            joinButton.setText(R.string.join_button);
+            // Revert join button text and reenable leave button
+            joinButton.setText(R.string.join);
             joinButton.setEnabled(true);
+            leaveButton.setEnabled(true);
 
             status_textview.append("\nERROR: Could not register to server.");
             onUnsuccessfulRegistration();
@@ -343,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Nest this AsyncTask class so that it can access the GUI
-    private class DeregisterSendTask extends AsyncTask<DatagramPacket, String, String> {
+    private class DeregisterTask extends AsyncTask<DatagramPacket, String, String> {
 
         // Use this to somehow display that a connection is being established (change Join button to Connect... or use Status Textview, ...)
         @Override
@@ -352,7 +358,8 @@ public class MainActivity extends AppCompatActivity {
             status_textview.setText("\n Starting deregistration Process...");
 
             // Change buttton text and disable to prevent errors
-            joinButton.setText(R.string.disconnecting);
+            leaveButton.setText(R.string.leaving);
+            leaveButton.setEnabled(false);
             joinButton.setEnabled(false);
 
         }
@@ -429,7 +436,8 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
 
             // Revert button text and reenable
-            joinButton.setText(R.string.join_button);
+            leaveButton.setText(R.string.leave);
+            leaveButton.setEnabled(true);
             joinButton.setEnabled(true);
 
             status_textview.append("\nReceived Ack from Server. Client is deregistered.");
@@ -441,8 +449,9 @@ public class MainActivity extends AppCompatActivity {
         protected void onCancelled(){
 
             // Revert button text and reenable
-            joinButton.setText(R.string.join_button);
+            joinButton.setText(R.string.leave);
             joinButton.setEnabled(true);
+            leaveButton.setEnabled(true);
 
             status_textview.append("\nERROR: Could not deregister from server.");
             onUnsuccessfulDeregistration();
