@@ -4,9 +4,10 @@
     <string name="join_button">Join</string>
     <string name="title_activity_settings">Settings</string>
     <string name="settings_button">Settings</string>
-    <string name="connecting">Connecting</string>
+    <string name="connecting">Connecting&#8230;</string>
+    <string name="disconnecting">Disconnecting&#8230;</string>
     <string name="default_username">Anonymous</string>
-    <string name="btn_retrieve_chat_log">Retrieve chat log</string>
+    <string name="leave">Leave</string>
 
     <!-- Strings for Settings -->
 
