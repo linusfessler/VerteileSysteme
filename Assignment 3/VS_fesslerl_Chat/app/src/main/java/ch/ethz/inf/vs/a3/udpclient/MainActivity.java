@@ -1,7 +1,9 @@
 package ch.ethz.inf.vs.a3.udpclient;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -61,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
         joinButton = (Button) findViewById(R.id.button_join);
         leaveButton= (Button) findViewById(R.id.button_leave);
 
+        // Set default values for settings
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
     }
 
     @Override
@@ -107,14 +112,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSuccessfulRegistration(String ackMessage){
 
-        // TODO: Uncomment this. Only used for testing.
         // Put username and uuid into Intent and start ChatActivity
-//        Intent toChat = new Intent(this, ChatActivity.class);
-//        toChat.putExtra(USERNAME, this.username);
-//        toChat.putExtra(UUID, uuid);
-//        toChat.putExtra(IP, toAddr);
-//        toChat.putExtra(PORT, port);
-//        startActivity(toChat);
+        Intent toChat = new Intent(this, ChatActivity.class);
+        toChat.putExtra(USERNAME, this.username);
+        toChat.putExtra(UUID, uuid);
+        toChat.putExtra(IP, toAddr);
+        toChat.putExtra(PORT, port);
+        startActivity(toChat);
     }
 
     private void onUnsuccessfulRegistration(){
@@ -170,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    // TODO: Use this method at some time (e.g. in onStart, check if is connected. If it is, execute.
     // Called to disconnect from server
     private void disconnectFromServer(){
 
@@ -197,27 +200,34 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-    // TODO: Actually get the port from settings.
     private int getPortFromSettings(){
 
-        int result = NetworkConsts.UDP_PORT;
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // TODO: Move this part of error handling to SettingsActivity class.
-        // Error if port value is too small or too big
-        if (result < 1025 || result > 65535){
-            Log.d(LOG_TAG, "#### ERROR: Port value not in bounds.");
-            errorDiag(getString(R.string.error_port));
-            return NetworkConsts.UDP_PORT;
+        // Read portnumber as string
+        String portString = sharedPref.getString(SettingsActivity.PREF_PORT, "");
+
+        if(!SettingsActivity.checkPort(portString)){
+            onUnsuccessfulRegistration();
         }
 
-        return result;
+        return Integer.parseInt(portString);
     }
 
-    // TODO: Actually get the IP from settings.
     private InetAddress getIpFromSettings(){
 
-        String ipString = NetworkConsts.SERVER_ADDRESS;
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String ipString = sharedPref.getString(SettingsActivity.PREF_IP, "");
+
+        Log.d(LOG_TAG, "### IP read from settings: " + ipString);
+
+        if(ipString.isEmpty())
+            errorDiag("Could not read IP from settings.");
+
+        if(!SettingsActivity.checkIp(ipString)) {
+            errorDiag("No valid IP address. Please change the IP in Settings to a valid IP. ");
+            onUnsuccessfulRegistration();
+        }
 
         InetAddress addr = null;
         try {
