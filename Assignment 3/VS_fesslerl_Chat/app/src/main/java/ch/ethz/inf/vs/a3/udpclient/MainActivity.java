@@ -98,11 +98,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void onSuccessfulConnection(String ackMessage){
-
-        // TODO: Delete this function call. Only used for testing
+    public void onLeaveClicked(View v){
         disconnectFromServer();
+    }
 
+    private void onSuccessfulRegistration(String ackMessage){
+
+        // TODO: Uncomment this. Only used for testing.
         // Put username and uuid into Intent and start ChatActivity
 //        Intent toChat = new Intent(this, ChatActivity.class);
 //        toChat.putExtra(USERNAME, this.username);
@@ -112,14 +114,22 @@ public class MainActivity extends AppCompatActivity {
 //        startActivity(toChat);
     }
 
-    private void onUnsuccessfulConnection(){
+    private void onUnsuccessfulRegistration(){
+        ;
+    }
+
+    private void onSuccessfulDeregistration(String ackMessage){
+        ;
+    }
+
+    private void onUnsuccessfulDeregistration(){
         ;
     }
 
     // Called to connect to server (by sending a registration packet)
     private void connectToServer(){
 
-        Log.d(LOG_TAG, "### Starting connection process");
+        Log.d(LOG_TAG, "### Starting registrationion process");
 
         port = getPortFromSettings();
 
@@ -166,38 +176,21 @@ public class MainActivity extends AppCompatActivity {
         // Check if socket is null.
         if(UDPClient.getSocket() == null){
             errorDiag("Socket null");
+            onUnsuccessfulRegistration();
         }
 
-        // Create packet
-        byte[] buf = new byte[0];
+        // Create deregistration packet
+        byte[] buf = new byte[NetworkConsts.PAYLOAD_SIZE];
         try {
             buf = new Message(username, uuid, null, MessageTypes.DEREGISTER, null).json.getBytes();
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+        // Build packet
         DatagramPacket deregisterPacket = new DatagramPacket(buf, buf.length, toAddr, port);
 
-        // Create new packet for ack message
-        byte[] ack_buf = new byte[256];     // More than enough space for the ack message
-        DatagramPacket ack = new DatagramPacket(ack_buf, ack_buf.length);
-
-        try {
-            UDPClient.getSocket().send(deregisterPacket);
-        } catch(IOException e) {
-            errorDiag("Could not send deregistration message");
-        }
-
-        // TODO: ?? Repeat this receive operation until timeout is reached (max. 5 times). Not sure if necessary.
-        try {
-            UDPClient.getSocket().receive(ack);
-        } catch(SocketTimeoutException te){
-            errorDiag("Socket timeout reached. Retrying...");
-        } catch (IOException e) {
-            errorDiag("Could not receive deregistration ack.");
-        }
-
-        Log.d(LOG_TAG, "### " + ack.getData().toString());
+        new DeregisterSendTask().execute(deregisterPacket);
 
     }
 
@@ -247,13 +240,12 @@ public class MainActivity extends AppCompatActivity {
     // Nest this AsyncTask class so that it can access the GUI
     private class RegisterSendTask extends AsyncTask<DatagramPacket, String, String> {
 
-        // TODO: Use this method to display connection establishment
         // Use this to somehow display that a connection is being established (change Join button to Connect... or use Status Textview, ...)
         @Override
         protected void onPreExecute(){
-            status_textview.setText("\n Starting Connection Process...");
+            status_textview.setText("\n Starting registration process...");
 
-            // Change buttton text and disable to prevent errors
+            // Change button text and disable to prevent errors
             joinButton.setText(R.string.connecting);
             joinButton.setEnabled(false);
 
@@ -281,8 +273,7 @@ public class MainActivity extends AppCompatActivity {
             byte[] ack_buf = new byte[NetworkConsts.PAYLOAD_SIZE];     // More than enough space for the ack message
             DatagramPacket ack = new DatagramPacket(ack_buf, ack_buf.length);
 
-            // TODO: Repeat the receive operation if timeout is reached (max. 5 times).
-            // Try receiving an answer
+            // Try sending and receiving an answer
             for(int i = 0; i < ATTEMPTS && !success; i++)
             {
                 // Try sending the packet
@@ -294,10 +285,9 @@ public class MainActivity extends AppCompatActivity {
 
                 // Try receiving the packet
                 try {
-                    publishProgress("Try # " + i+1);
+                    publishProgress("Try # " + (i+1));
                     UDPClient.getSocket().receive(ack);
                 } catch (SocketTimeoutException te) {
-                    // Remove this when trying to connect multiple times
                     publishProgress("Timeout.");
                     if (i == 4)
                         cancel(false);
@@ -336,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
             joinButton.setEnabled(true);
 
             status_textview.append("\nReceived Ack from Server. Client is registered.");
-            onSuccessfulConnection(result);
+            onSuccessfulRegistration(result);
         }
 
         // Cancel if socket is null or if no answer was received after 5 attempts
@@ -347,22 +337,33 @@ public class MainActivity extends AppCompatActivity {
             joinButton.setText(R.string.join_button);
             joinButton.setEnabled(true);
 
-            status_textview.append("\nERROR: Could not connect to server.");
-            onUnsuccessfulConnection();
+            status_textview.append("\nERROR: Could not register to server.");
+            onUnsuccessfulRegistration();
         }
     }
 
+    // Nest this AsyncTask class so that it can access the GUI
     private class DeregisterSendTask extends AsyncTask<DatagramPacket, String, String> {
 
-        // TODO: Use this method to display connection establishment
         // Use this to somehow display that a connection is being established (change Join button to Connect... or use Status Textview, ...)
         @Override
         protected void onPreExecute(){
-            status_textview.setText("\n Starting Connection Process...");
+
+            status_textview.setText("\n Starting deregistration Process...");
+
+            // Change buttton text and disable to prevent errors
+            joinButton.setText(R.string.disconnecting);
+            joinButton.setEnabled(false);
+
         }
 
         @Override
         protected String doInBackground(DatagramPacket... dps){
+
+            // Message object for buffering received ack
+            Message recAck = null;
+            String ackString = null;
+            boolean success = false;
 
             // Check if there is at least one DatagramPacket in the array
             if(dps.length <= 0){
@@ -378,9 +379,8 @@ public class MainActivity extends AppCompatActivity {
             byte[] ack_buf = new byte[NetworkConsts.PAYLOAD_SIZE];     // More than enough space for the ack message
             DatagramPacket ack = new DatagramPacket(ack_buf, ack_buf.length);
 
-            // TODO: Repeat the receive operation if timeout is reached (max. 5 times).
-            // Try receiving an answer
-            for(int i = 0; i < ATTEMPTS; i++)
+            // Try sending and receiving an answer
+            for(int i = 0; i < ATTEMPTS && !success; i++)
             {
                 // Try sending the packet
                 try {
@@ -391,15 +391,29 @@ public class MainActivity extends AppCompatActivity {
 
                 // Try receiving the packet
                 try {
-                    publishProgress("Try # " + i);
+                    publishProgress("Try # " + (i+1));
                     UDPClient.getSocket().receive(ack);
                 } catch (SocketTimeoutException te) {
-                    // Remove this when trying to connect multiple times
                     publishProgress("Timeout.");
                     if (i == 4)
                         cancel(false);
                 } catch (IOException e) {
                     this.cancel(false);
+                }
+
+                // Abort loop if correct message has been received.
+                ackString = new String(ack.getData());
+                if(!ackString.isEmpty()){
+                    try {
+                        recAck = new Message(ackString);
+                        if(recAck.type.equals(MessageTypes.ACK_MESSAGE)){
+                            success = true;
+                        }
+                    } catch (JSONException e) {
+                        // No valid JSON answer
+                        errorDiag("JSONException thrown");
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -413,17 +427,26 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            status_textview.append("\nReply:\n" + result);
-            onSuccessfulConnection(result);
+
+            // Revert button text and reenable
+            joinButton.setText(R.string.join_button);
+            joinButton.setEnabled(true);
+
+            status_textview.append("\nReceived Ack from Server. Client is deregistered.");
+            onSuccessfulDeregistration(result);
         }
 
         // Cancel if socket is null or if no answer was received after 5 attempts
         @Override
         protected void onCancelled(){
-            status_textview.append("\nERROR: Could not connect to server.");
-            onUnsuccessfulConnection();
+
+            // Revert button text and reenable
+            joinButton.setText(R.string.join_button);
+            joinButton.setEnabled(true);
+
+            status_textview.append("\nERROR: Could not deregister from server.");
+            onUnsuccessfulDeregistration();
         }
     }
-
 
 }
