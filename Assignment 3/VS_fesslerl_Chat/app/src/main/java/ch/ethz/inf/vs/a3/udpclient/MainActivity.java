@@ -114,24 +114,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Put username and uuid into Intent and start ChatActivity
         Intent toChat = new Intent(this, ChatActivity.class);
-        toChat.putExtra(USERNAME, this.username);
+        toChat.putExtra(USERNAME, username);
         toChat.putExtra(UUID, uuid);
-        toChat.putExtra(IP, toAddr);
+        toChat.putExtra(IP, toAddr.getHostAddress());
         toChat.putExtra(PORT, port);
         startActivity(toChat);
     }
 
-    private void onUnsuccessfulRegistration(){
-        ;
-    }
+    private void onUnsuccessfulRegistration() {}
 
-    private void onSuccessfulDeregistration(String ackMessage){
-        ;
-    }
+    private void onSuccessfulDeregistration(String ackMessage) {}
 
-    private void onUnsuccessfulDeregistration(){
-        ;
-    }
+    private void onUnsuccessfulDeregistration() {}
 
     // Called to connect to server (by sending a registration packet)
     private void connectToServer(){
@@ -143,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         // Create new UDP Socket
         try {
             UDPClient.setSocket(new DatagramSocket(port));
-        }catch(SocketException e){
+        } catch(SocketException e){
             errorDiag("Could not bind socket to port " + port);
             e.printStackTrace();
         }

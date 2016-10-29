@@ -23,11 +23,10 @@ public class ChatActivity extends AppCompatActivity {
 
     private String username;
     private String uuid;
-    InetAddress ipAddress;
-    int port;
+    private InetAddress ipAddress;
+    private int port;
     private DatagramSocket socket;
-
-    private TextView usernameText;
+    private RetrieveChatLog retrieveChatLog;
 
     private final static String LOG_TAG = "ChatActivity";
 
@@ -50,6 +49,15 @@ public class ChatActivity extends AppCompatActivity {
         socket = UDPClient.getSocket();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (retrieveChatLog != null) {
+            retrieveChatLog.cancel(true);
+            retrieveChatLog = null;
+        }
+    }
+
     public void onRetrieveChatLogClicked(View v) {
         // Create Register Packet message
         byte[] buf = new byte[NetworkConsts.PAYLOAD_SIZE];
@@ -68,7 +76,8 @@ public class ChatActivity extends AppCompatActivity {
             errorDiag("Could not send registration message.");
         }
 
-        new RetrieveChatLog().execute(this);
+        retrieveChatLog = new RetrieveChatLog();
+        retrieveChatLog.execute(this);
     }
 
     // Used to print error messages as dialog.

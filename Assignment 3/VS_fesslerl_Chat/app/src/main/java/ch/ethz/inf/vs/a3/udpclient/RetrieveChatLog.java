@@ -1,6 +1,7 @@
 package ch.ethz.inf.vs.a3.udpclient;
 
 import android.os.AsyncTask;
+import android.os.Debug;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -11,6 +12,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.PriorityQueue;
 
+import ch.ethz.inf.vs.a3.message.ErrorCodes;
 import ch.ethz.inf.vs.a3.message.Message;
 import ch.ethz.inf.vs.a3.message.MessageComparator;
 
@@ -36,7 +38,7 @@ public class RetrieveChatLog extends AsyncTask<ChatActivity, Void, PriorityQueue
         }
 
         PriorityQueue<Message> queue = new PriorityQueue<>(1, new MessageComparator());
-        while (true) {
+        while (!isCancelled()) {
             try {
                 byte[] buffer = new byte[NetworkConsts.PAYLOAD_SIZE];
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -52,7 +54,8 @@ public class RetrieveChatLog extends AsyncTask<ChatActivity, Void, PriorityQueue
                 e.printStackTrace();
             }
         }
-
+        if (isCancelled())
+            Log.d("############", "Cancelled.");
         return queue;
     }
 
@@ -63,8 +66,13 @@ public class RetrieveChatLog extends AsyncTask<ChatActivity, Void, PriorityQueue
 
         int i = 0;
         String[] contents = new String[queue.size()];
-        for (Message message : queue)
-            contents[i++] = message.content;
+        for (Message message : queue) {
+            if (message.content != null && message.content.matches("^[0-4]{1}")) {
+                int errorCode = Integer.parseInt(message.content);
+                contents[i++] = "Error " + errorCode + ": " + ErrorCodes.getStringError(errorCode);
+            } else
+                contents[i++] = message.content;
+        }
 
         ListView list = (ListView) activity.findViewById(R.id.list_chat_log);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(activity, R.layout.chat_item, contents);
