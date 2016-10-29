@@ -1,6 +1,9 @@
 package ch.ethz.inf.vs.a3.udpclient;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -31,11 +35,14 @@ public class MainActivity extends AppCompatActivity {
     public static final String UUID = "UUID";
     public static final String IP = "IP";
     public static final String PORT = "PORT";
+    public static final int ATTEMPTS = 5;
 
     //private DatagramSocket sock;
     private static final String LOG_TAG = "MainActivity";
     private String username;
     private TextView status_textview;
+    private Button joinButton;
+    private Button leaveButton;
     private String uuid;
     InetAddress toAddr;
     int port;
@@ -51,6 +58,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Init TextView for status messages
         status_textview = (TextView) findViewById(R.id.status_textview);
+
+        // Init button to change text and block
+        joinButton = (Button) findViewById(R.id.button_join);
+        leaveButton= (Button) findViewById(R.id.button_leave);
+
+        // Set default values for settings
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
     }
 
     @Override
@@ -75,8 +90,9 @@ public class MainActivity extends AppCompatActivity {
         username = username_input.getText().toString();
 
         // If username is invalid, use default username
-        if (username.isEmpty() || username == null)
+        if(username.isEmpty() || username == null) {
             username = getString(R.string.default_username);
+        }
 
         Log.d(LOG_TAG, "### Username: " + username);
 
@@ -90,30 +106,42 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void onSuccessfulConnection(){
+    public void onLeaveClicked(View v){
+        disconnectFromServer();
+    }
+
+    private void onSuccessfulRegistration(String ackMessage){
+
         // Put username and uuid into Intent and start ChatActivity
         Intent toChat = new Intent(this, ChatActivity.class);
         toChat.putExtra(USERNAME, this.username);
         toChat.putExtra(UUID, uuid);
-        toChat.putExtra(IP, toAddr.getHostAddress());
+        toChat.putExtra(IP, toAddr);
         toChat.putExtra(PORT, port);
         startActivity(toChat);
     }
 
-    private void onUnsuccessfulConnection(){
+    private void onUnsuccessfulRegistration(){
+        ;
+    }
+
+    private void onSuccessfulDeregistration(String ackMessage){
+        ;
+    }
+
+    private void onUnsuccessfulDeregistration(){
         ;
     }
 
     // Called to connect to server (by sending a registration packet)
     private void connectToServer(){
 
-        Log.d(LOG_TAG, "### Starting connection process");
+        Log.d(LOG_TAG, "### Starting registrationion process");
 
         port = getPortFromSettings();
 
         // Create new UDP Socket
         try {
-//            sock = new DatagramSocket(port);
             UDPClient.setSocket(new DatagramSocket(port));
         }catch(SocketException e){
             errorDiag("Could not bind socket to port " + port);
@@ -121,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         try {
-//            sock.setSoTimeout(NetworkConsts.SOCKET_TIMEOUT);
             UDPClient.getSocket().setSoTimeout(NetworkConsts.SOCKET_TIMEOUT);
         } catch (SocketException e) {
             errorDiag("Could not set socket timeout " + NetworkConsts.SOCKET_TIMEOUT);
@@ -142,39 +169,11 @@ public class MainActivity extends AppCompatActivity {
         // Build packet
         DatagramPacket registerPacket = new DatagramPacket(buf, 0, buf.length, toAddr, port);
 
-        // Create new packet for ack message
-        byte[] ack_buf = new byte[NetworkConsts.PAYLOAD_SIZE];     // More than enough space for the ack message
-        DatagramPacket ack = new DatagramPacket(ack_buf, ack_buf.length);
 
-        // TODO: Execute send in AsyncTask
-        try {
-//            sock.send(registerPacket);
-            UDPClient.getSocket().send(registerPacket);
-        } catch (IOException e) {
-            errorDiag("Could not send registration message.");
-        }
-
-        // TODO: Execute receive in AsyncTask
-        // TODO: Repeat the receive operation if timeout is reached (max. 5 times).
-        try {
-//            sock.receive(ack);
-            UDPClient.getSocket().receive(ack);
-        } catch (SocketTimeoutException te) {
-            errorDiag("Socket timeout reached. Retrying...");
-
-            // This needs to be moved when implementing the retrying
-            onUnsuccessfulConnection();
-        } catch (IOException e) {
-            errorDiag("Could not receive registration ack.");
-            onUnsuccessfulConnection();
-        }
-
-        status_textview.setText(ack.getData().toString());
-        onSuccessfulConnection();
+        new RegisterTask().execute(registerPacket);
 
     }
 
-    // TODO: Use this method at some time (e.g. in onStart, check if is connected. If it is, execute.
     // Called to disconnect from server
     private void disconnectFromServer(){
 
@@ -183,62 +182,52 @@ public class MainActivity extends AppCompatActivity {
         // Check if socket is null.
         if(UDPClient.getSocket() == null){
             errorDiag("Socket null");
+            onUnsuccessfulRegistration();
         }
 
-        // Create packet
-        byte[] buf = new byte[0];
+        // Create deregistration packet
+        byte[] buf = new byte[NetworkConsts.PAYLOAD_SIZE];
         try {
             buf = new Message(username, uuid, null, MessageTypes.DEREGISTER, null).json.getBytes();
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+        // Build packet
         DatagramPacket deregisterPacket = new DatagramPacket(buf, buf.length, toAddr, port);
 
-        // Create new packet for ack message
-        byte[] ack_buf = new byte[256];     // More than enough space for the ack message
-        DatagramPacket ack = new DatagramPacket(ack_buf, ack_buf.length);
-
-        try {
-            UDPClient.getSocket().send(deregisterPacket);
-        } catch(IOException e) {
-            errorDiag("Could not send deregistration message");
-        }
-
-        // TODO: ?? Repeat this receive operation until timeout is reached (max. 5 times). Not sure if necessary.
-        try {
-            UDPClient.getSocket().receive(ack);
-        } catch(SocketTimeoutException te){
-            errorDiag("Socket timeout reached. Retrying...");
-        } catch (IOException e) {
-            errorDiag("Could not receive deregistration ack.");
-        }
-
-        Log.d(LOG_TAG, "### " + ack.getData().toString());
+        new DeregisterTask().execute(deregisterPacket);
 
     }
 
-
-    // TODO: Actually get the port from settings.
     private int getPortFromSettings(){
 
-        int result = NetworkConsts.UDP_PORT;
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // TODO: Move this part of error handling to SettingsActivity class.
-        // Error if port value is too small or too big
-        if (result < 1025 || result > 65535){
-            Log.d(LOG_TAG, "#### ERROR: Port value not in bounds.");
-            errorDiag(getString(R.string.error_port));
-            return NetworkConsts.UDP_PORT;
+        // Read portnumber as string
+        String portString = sharedPref.getString(SettingsActivity.PREF_PORT, "");
+
+        if(!SettingsActivity.checkPort(portString)){
+            onUnsuccessfulRegistration();
         }
 
-        return result;
+        return Integer.parseInt(portString);
     }
 
-    // TODO: Actually get the IP from settings.
     private InetAddress getIpFromSettings(){
 
-        String ipString = NetworkConsts.SERVER_ADDRESS;
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String ipString = sharedPref.getString(SettingsActivity.PREF_IP, "");
+
+        Log.d(LOG_TAG, "### IP read from settings: " + ipString);
+
+        if(ipString.isEmpty())
+            errorDiag("Could not read IP from settings.");
+
+        if(!SettingsActivity.checkIp(ipString)) {
+            errorDiag("No valid IP address. Please change the IP in Settings to a valid IP. ");
+            onUnsuccessfulRegistration();
+        }
 
         InetAddress addr = null;
         try {
@@ -255,6 +244,228 @@ public class MainActivity extends AppCompatActivity {
     // Used to print error messages as dialog.
     private void errorDiag(String message){
         Log.d(LOG_TAG, "#### ERROR: " + message);
+    }
+
+
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    // Nest this AsyncTask class so that it can access the GUI
+    private class RegisterTask extends AsyncTask<DatagramPacket, String, String> {
+
+        // Use this to somehow display that a connection is being established (change Join button to Connect... or use Status Textview, ...)
+        @Override
+        protected void onPreExecute(){
+            status_textview.setText("\n Starting registration process...");
+
+            // Change button text and disable leave button to prevent errors
+            joinButton.setText(R.string.joining);
+            joinButton.setEnabled(false);
+            leaveButton.setEnabled(false);
+
+        }
+
+        @Override
+        protected String doInBackground(DatagramPacket... dps){
+
+            // Message object for buffering received ack
+            Message recAck = null;
+            String ackString = null;
+            boolean success = false;
+
+            // Check if there is at least one DatagramPacket in the array
+            if(dps.length <= 0){
+                this.cancel(false);
+            }
+
+            // Check if socket is valid
+            if(UDPClient.getSocket() == null){
+                this.cancel(false);
+            }
+
+            // Create new packet for ack message
+            byte[] ack_buf = new byte[NetworkConsts.PAYLOAD_SIZE];     // More than enough space for the ack message
+            DatagramPacket ack = new DatagramPacket(ack_buf, ack_buf.length);
+
+            // Try sending and receiving an answer
+            for(int i = 0; i < ATTEMPTS && !success; i++)
+            {
+                // Try sending the packet
+                try {
+                    UDPClient.getSocket().send(dps[0]);
+                } catch (IOException e) {
+                    this.cancel(false);
+                }
+
+                // Try receiving the packet
+                try {
+                    publishProgress("Try # " + (i+1));
+                    UDPClient.getSocket().receive(ack);
+                } catch (SocketTimeoutException te) {
+                    publishProgress("Timeout.");
+                    if (i == 4)
+                        cancel(false);
+                } catch (IOException e) {
+                    this.cancel(false);
+                }
+
+                // Abort loop if correct message has been received.
+                ackString = new String(ack.getData());
+                if(!ackString.isEmpty()){
+                    try {
+                        recAck = new Message(ackString);
+                        if(recAck.type.equals(MessageTypes.ACK_MESSAGE)){
+                            success = true;
+                        }
+                    } catch (JSONException e) {
+                        // No valid JSON answer
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return (new String(ack.getData()));
+        }
+
+        @Override
+        protected void onProgressUpdate(String... strings){
+            status_textview.append("\n" + strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            // Revert button text and reenable
+            joinButton.setText(R.string.join);
+            joinButton.setEnabled(true);
+            leaveButton.setEnabled(true);
+
+            status_textview.append("\nReceived Ack from Server. Client is registered.");
+            onSuccessfulRegistration(result);
+        }
+
+        // Cancel if socket is null or if no answer was received after 5 attempts
+        @Override
+        protected void onCancelled(){
+
+            // Revert join button text and reenable leave button
+            joinButton.setText(R.string.join);
+            joinButton.setEnabled(true);
+            leaveButton.setEnabled(true);
+
+            status_textview.append("\nERROR: Could not register to server.");
+            onUnsuccessfulRegistration();
+        }
+    }
+
+    // Nest this AsyncTask class so that it can access the GUI
+    private class DeregisterTask extends AsyncTask<DatagramPacket, String, String> {
+
+        // Use this to somehow display that a connection is being established (change Join button to Connect... or use Status Textview, ...)
+        @Override
+        protected void onPreExecute(){
+
+            status_textview.setText("\n Starting deregistration Process...");
+
+            // Change buttton text and disable to prevent errors
+            leaveButton.setText(R.string.leaving);
+            leaveButton.setEnabled(false);
+            joinButton.setEnabled(false);
+
+        }
+
+        @Override
+        protected String doInBackground(DatagramPacket... dps){
+
+            // Message object for buffering received ack
+            Message recAck = null;
+            String ackString = null;
+            boolean success = false;
+
+            // Check if there is at least one DatagramPacket in the array
+            if(dps.length <= 0){
+                this.cancel(false);
+            }
+
+            // Check if socket is valid
+            if(UDPClient.getSocket() == null){
+                this.cancel(false);
+            }
+
+            // Create new packet for ack message
+            byte[] ack_buf = new byte[NetworkConsts.PAYLOAD_SIZE];     // More than enough space for the ack message
+            DatagramPacket ack = new DatagramPacket(ack_buf, ack_buf.length);
+
+            // Try sending and receiving an answer
+            for(int i = 0; i < ATTEMPTS && !success; i++)
+            {
+                // Try sending the packet
+                try {
+                    UDPClient.getSocket().send(dps[0]);
+                } catch (IOException e) {
+                    this.cancel(false);
+                }
+
+                // Try receiving the packet
+                try {
+                    publishProgress("Try # " + (i+1));
+                    UDPClient.getSocket().receive(ack);
+                } catch (SocketTimeoutException te) {
+                    publishProgress("Timeout.");
+                    if (i == 4)
+                        cancel(false);
+                } catch (IOException e) {
+                    this.cancel(false);
+                }
+
+                // Abort loop if correct message has been received.
+                ackString = new String(ack.getData());
+                if(!ackString.isEmpty()){
+                    try {
+                        recAck = new Message(ackString);
+                        if(recAck.type.equals(MessageTypes.ACK_MESSAGE)){
+                            success = true;
+                        }
+                    } catch (JSONException e) {
+                        // No valid JSON answer
+                        errorDiag("JSONException thrown");
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return (new String(ack.getData()));
+        }
+
+        @Override
+        protected void onProgressUpdate(String... strings){
+            status_textview.append("\n" + strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            // Revert button text and reenable
+            leaveButton.setText(R.string.leave);
+            leaveButton.setEnabled(true);
+            joinButton.setEnabled(true);
+
+            status_textview.append("\nReceived Ack from Server. Client is deregistered.");
+            onSuccessfulDeregistration(result);
+        }
+
+        // Cancel if socket is null or if no answer was received after 5 attempts
+        @Override
+        protected void onCancelled(){
+
+            // Revert button text and reenable
+            joinButton.setText(R.string.leave);
+            joinButton.setEnabled(true);
+            leaveButton.setEnabled(true);
+
+            status_textview.append("\nERROR: Could not deregister from server.");
+            onUnsuccessfulDeregistration();
+        }
     }
 
 }
