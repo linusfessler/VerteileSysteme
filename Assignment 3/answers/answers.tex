@@ -67,7 +67,7 @@ Let $C,D$ be Vector Clocks in a system with $n$ processes. Let $C_i$ denote the 
 
 \item {Does a clock tick happen before or after the sending of a message. What are the implications of changing this?}
 
-The clock ticks happen before the sending of a message. If the tick happened after sending the message, the clock condition would not be fullfilled. Consider the following situation: \includegraphics[scale=0.4]{question3_example}
+The clock ticks happen before the sending of a message. If the tick happened after sending the message, the clock condition would not be fulfilled. Consider the following situation: \includegraphics[scale=0.4]{question3_example}
 
 In this case, the clock condition is violated because clearly $$e1 \prec e2 \wedge C(e1) = \begin{pmatrix} 1 \\ 0 \\ 0 \end{pmatrix} \not< \begin{pmatrix} 0 \\ 1 \\ 0 \end{pmatrix} = C(e2).$$
  
