@@ -250,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Change button text and disable leave button to prevent errors
             joinButton.setText(R.string.joining);
+            joinButton.setEnabled(false);
             leaveButton.setEnabled(false);
             editText.setEnabled(true);
         }
@@ -323,6 +324,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Revert button text and reenable
             joinButton.setText(R.string.join);
+            joinButton.setEnabled(true);
             leaveButton.setEnabled(true);
             editText.setEnabled(false);
 
@@ -336,10 +338,13 @@ public class MainActivity extends AppCompatActivity {
 
             // Revert join button text and reenable leave button
             joinButton.setText(R.string.join);
+            joinButton.setEnabled(true);
             leaveButton.setEnabled(false);
             editText.setEnabled(true);
 
             status_textview.append("\nERROR: Could not register to server.");
+            UDPClient.getSocket().close();
+            UDPClient.setSocket(null);
         }
     }
 
