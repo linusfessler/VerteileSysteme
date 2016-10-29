@@ -1,15 +1,16 @@
 <resources>
-    <string name="app_name">VS_fesslerl_Chat</string>
+    <string name="app_name">VS fesslerl chat</string>
     <string name="enter_username">Enter Username</string>
     <string name="title_activity_settings">Settings</string>
     <string name="settings_button">Settings</string>
     <string name="default_username">Anonymous</string>
-    <string name="btn_retrieve_chat_log">Retrieve chat log</string>
 
     <string name="join">Join</string>
     <string name="joining">Joining&#8230;</string>
     <string name="leave">Leave</string>
     <string name="leaving">Leaving&#8230;</string>
+    <string name="btn_retrieve_chat_log">Retrieve chat log</string>
+    <string name="btn_retrieving_chat_log">Retrieving chat log&#8230;</string>
 
     <!-- Strings for Settings -->
 
