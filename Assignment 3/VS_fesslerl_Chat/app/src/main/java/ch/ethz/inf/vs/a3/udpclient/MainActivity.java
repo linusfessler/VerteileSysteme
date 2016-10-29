@@ -41,11 +41,12 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MainActivity";
     private String username;
     private TextView status_textview;
+    private EditText editText;
     private Button joinButton;
     private Button leaveButton;
     private String uuid;
-    InetAddress toAddr;
-    int port;
+    private InetAddress toAddr;
+    private int port;
 
 
     @Override
@@ -58,14 +59,19 @@ public class MainActivity extends AppCompatActivity {
 
         // Init TextView for status messages
         status_textview = (TextView) findViewById(R.id.status_textview);
+        editText = (EditText) findViewById(R.id.uname_input);
 
         // Init button to change text and block
         joinButton = (Button) findViewById(R.id.button_join);
-        leaveButton= (Button) findViewById(R.id.button_leave);
+        leaveButton = (Button) findViewById(R.id.button_leave);
+        DatagramSocket socket = UDPClient.getSocket();
+        if (socket == null || socket.isClosed())
+            leaveButton.setEnabled(false);
+        else
+            editText.setEnabled(false);
 
         // Set default values for settings
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
     }
 
     @Override
@@ -76,12 +82,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Execute when user clicks on Settings menu
-    public void onSettingsClicked(MenuItem Item){
+    public void onSettingsClicked(MenuItem Item) {
         Intent toSettings = new Intent(this, SettingsActivity.class);
         startActivity(toSettings);
     }
 
-    public void onJoinClicked(View v){
+    public void onJoinClicked(View v) {
 
         Log.d(LOG_TAG, "### Clicked Join");
 
@@ -90,9 +96,8 @@ public class MainActivity extends AppCompatActivity {
         username = username_input.getText().toString();
 
         // If username is invalid, use default username
-        if(username.isEmpty() || username == null) {
+        if (username.isEmpty())
             username = getString(R.string.default_username);
-        }
 
         Log.d(LOG_TAG, "### Username: " + username);
 
@@ -100,50 +105,46 @@ public class MainActivity extends AppCompatActivity {
         String[] temp = username.split("\n", 2);
         username = temp[0];
 
+        toAddr = getIpFromSettings();
+        port = getPortFromSettings();
+
         // First: Register at server. If registering is successful: start ChatActivity. Else: display error message.
-        connectToServer();
+        DatagramSocket socket = UDPClient.getSocket();
+        if (socket == null || socket.isClosed())
+            connectToServer();
+        else
+            onSuccessfulRegistration(null);
+    }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        disconnectFromServer();
     }
 
     public void onLeaveClicked(View v){
         disconnectFromServer();
     }
 
-    private void onSuccessfulRegistration(String ackMessage){
-
+    private void onSuccessfulRegistration(String ackMessage) {
         // Put username and uuid into Intent and start ChatActivity
         Intent toChat = new Intent(this, ChatActivity.class);
-        toChat.putExtra(USERNAME, this.username);
+        toChat.putExtra(USERNAME, username);
         toChat.putExtra(UUID, uuid);
-        toChat.putExtra(IP, toAddr);
+        toChat.putExtra(IP, toAddr.getHostAddress());
         toChat.putExtra(PORT, port);
         startActivity(toChat);
-    }
-
-    private void onUnsuccessfulRegistration(){
-        ;
-    }
-
-    private void onSuccessfulDeregistration(String ackMessage){
-        ;
-    }
-
-    private void onUnsuccessfulDeregistration(){
-        ;
     }
 
     // Called to connect to server (by sending a registration packet)
     private void connectToServer(){
 
-        Log.d(LOG_TAG, "### Starting registrationion process");
-
-        port = getPortFromSettings();
+        Log.d(LOG_TAG, "###Starting registration process");
 
         // Create new UDP Socket
         try {
             UDPClient.setSocket(new DatagramSocket(port));
-        }catch(SocketException e){
+        } catch(SocketException e){
             errorDiag("Could not bind socket to port " + port);
             e.printStackTrace();
         }
@@ -153,9 +154,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (SocketException e) {
             errorDiag("Could not set socket timeout " + NetworkConsts.SOCKET_TIMEOUT);
         }
-
-
-        toAddr = getIpFromSettings();
 
 
         // Create Register Packet message
@@ -180,10 +178,8 @@ public class MainActivity extends AppCompatActivity {
         // TODO: Check if it is necessary to get port and ip value from the settings again
 
         // Check if socket is null.
-        if(UDPClient.getSocket() == null){
+        if(UDPClient.getSocket() == null)
             errorDiag("Socket null");
-            onUnsuccessfulRegistration();
-        }
 
         // Create deregistration packet
         byte[] buf = new byte[NetworkConsts.PAYLOAD_SIZE];
@@ -207,10 +203,6 @@ public class MainActivity extends AppCompatActivity {
         // Read portnumber as string
         String portString = sharedPref.getString(SettingsActivity.PREF_PORT, "");
 
-        if(!SettingsActivity.checkPort(portString)){
-            onUnsuccessfulRegistration();
-        }
-
         return Integer.parseInt(portString);
     }
 
@@ -224,10 +216,8 @@ public class MainActivity extends AppCompatActivity {
         if(ipString.isEmpty())
             errorDiag("Could not read IP from settings.");
 
-        if(!SettingsActivity.checkIp(ipString)) {
+        if(!SettingsActivity.checkIp(ipString))
             errorDiag("No valid IP address. Please change the IP in Settings to a valid IP. ");
-            onUnsuccessfulRegistration();
-        }
 
         InetAddress addr = null;
         try {
@@ -256,13 +246,12 @@ public class MainActivity extends AppCompatActivity {
         // Use this to somehow display that a connection is being established (change Join button to Connect... or use Status Textview, ...)
         @Override
         protected void onPreExecute(){
-            status_textview.setText("\n Starting registration process...");
+            status_textview.setText("\nStarting registration process...");
 
             // Change button text and disable leave button to prevent errors
             joinButton.setText(R.string.joining);
-            joinButton.setEnabled(false);
             leaveButton.setEnabled(false);
-
+            editText.setEnabled(true);
         }
 
         @Override
@@ -317,10 +306,7 @@ public class MainActivity extends AppCompatActivity {
                         if(recAck.type.equals(MessageTypes.ACK_MESSAGE)){
                             success = true;
                         }
-                    } catch (JSONException e) {
-                        // No valid JSON answer
-                        e.printStackTrace();
-                    }
+                    } catch (JSONException e) {}
                 }
             }
 
@@ -337,8 +323,8 @@ public class MainActivity extends AppCompatActivity {
 
             // Revert button text and reenable
             joinButton.setText(R.string.join);
-            joinButton.setEnabled(true);
             leaveButton.setEnabled(true);
+            editText.setEnabled(false);
 
             status_textview.append("\nReceived Ack from Server. Client is registered.");
             onSuccessfulRegistration(result);
@@ -350,11 +336,10 @@ public class MainActivity extends AppCompatActivity {
 
             // Revert join button text and reenable leave button
             joinButton.setText(R.string.join);
-            joinButton.setEnabled(true);
-            leaveButton.setEnabled(true);
+            leaveButton.setEnabled(false);
+            editText.setEnabled(true);
 
             status_textview.append("\nERROR: Could not register to server.");
-            onUnsuccessfulRegistration();
         }
     }
 
@@ -365,13 +350,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute(){
 
-            status_textview.setText("\n Starting deregistration Process...");
+            status_textview.setText("\nStarting deregistration Process...");
 
-            // Change buttton text and disable to prevent errors
+            // Change button text and disable to prevent errors
             leaveButton.setText(R.string.leaving);
             leaveButton.setEnabled(false);
             joinButton.setEnabled(false);
-
         }
 
         @Override
@@ -426,11 +410,7 @@ public class MainActivity extends AppCompatActivity {
                         if(recAck.type.equals(MessageTypes.ACK_MESSAGE)){
                             success = true;
                         }
-                    } catch (JSONException e) {
-                        // No valid JSON answer
-                        errorDiag("JSONException thrown");
-                        e.printStackTrace();
-                    }
+                    } catch (JSONException e) {}
                 }
             }
 
@@ -444,28 +424,26 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-
             // Revert button text and reenable
             leaveButton.setText(R.string.leave);
-            leaveButton.setEnabled(true);
+            leaveButton.setEnabled(false);
             joinButton.setEnabled(true);
+            editText.setEnabled(true);
 
             status_textview.append("\nReceived Ack from Server. Client is deregistered.");
-            onSuccessfulDeregistration(result);
+            UDPClient.getSocket().close();
+            UDPClient.setSocket(null);
         }
 
         // Cancel if socket is null or if no answer was received after 5 attempts
         @Override
         protected void onCancelled(){
-
             // Revert button text and reenable
-            joinButton.setText(R.string.leave);
-            joinButton.setEnabled(true);
+            leaveButton.setText(R.string.leave);
             leaveButton.setEnabled(true);
+            joinButton.setEnabled(true);
 
             status_textview.append("\nERROR: Could not deregister from server.");
-            onUnsuccessfulDeregistration();
         }
     }
-
 }

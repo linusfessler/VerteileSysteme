@@ -15,23 +15,23 @@ public class ErrorCodes {
 	public static String getStringError(int errorCode) {
 		String error = null;
 		switch(errorCode) {
-			case 0:
+			case REG_FAIL:
 				error = "Registration failed";
 				break;
 
-			case 1:
+			case DEREG_FAIL_UUID:
 				error = "Deregistration failed due to the UUID";
 				break;
 
-			case 2:
+			case DEREG_FAIL_USERNAME:
 				error = "Deregistration failed due to the username";
 				break;
 
-			case 3:
+			case USER_AUTHENTICATION_FAIL:
 				error = "User authentication fail";
 				break;
 
-			case 4:
+			case MSG_PARSING_FAILED:
 				error = "Message parsing failed";
 				break;
 

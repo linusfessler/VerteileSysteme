@@ -1,11 +1,10 @@
 package ch.ethz.inf.vs.a3.udpclient;
 
-import android.net.Network;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
 
 import org.json.JSONException;
 
@@ -14,7 +13,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.PriorityQueue;
 
 import ch.ethz.inf.vs.a3.message.Message;
 import ch.ethz.inf.vs.a3.message.MessageTypes;
@@ -23,11 +21,9 @@ public class ChatActivity extends AppCompatActivity {
 
     private String username;
     private String uuid;
-    InetAddress ipAddress;
-    int port;
+    private InetAddress ipAddress;
+    private int port;
     private DatagramSocket socket;
-
-    private TextView usernameText;
 
     private final static String LOG_TAG = "ChatActivity";
 
@@ -51,7 +47,11 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void onRetrieveChatLogClicked(View v) {
-        // Create Register Packet message
+        Button button = ((Button) v);
+        button.setEnabled(false);
+        button.setText(R.string.btn_retrieving_chat_log);
+
+        // Create message buffer
         byte[] buf = new byte[NetworkConsts.PAYLOAD_SIZE];
         try {
             buf = new Message(username, uuid, null, MessageTypes.RETRIEVE_CHAT_LOG, null).json.getBytes();
@@ -60,10 +60,10 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         // Build packet
-        DatagramPacket registerPacket = new DatagramPacket(buf, 0, buf.length, ipAddress, port);
+        DatagramPacket packet = new DatagramPacket(buf, 0, buf.length, ipAddress, port);
 
         try {
-            socket.send(registerPacket);
+            socket.send(packet);
         } catch (IOException e) {
             errorDiag("Could not send registration message.");
         }
