@@ -47,13 +47,6 @@ public class ChatActivity extends AppCompatActivity {
         setTitle("Distributed Chat, connected as " + username);
 
         socket = UDPClient.getSocket();
-
-        /*if (retrieveChatLog != null && retrieveChatLog.getStatus() != AsyncTask.Status.FINISHED) {
-            Log.d("###################", "#################");
-            Button button = ((Button) findViewById(R.id.btn_retrieve_chat_log));
-            button.setEnabled(false);
-            button.setText(R.string.btn_retrieving_chat_log);
-        }*/
     }
 
     public void onRetrieveChatLogClicked(View v) {
@@ -61,27 +54,26 @@ public class ChatActivity extends AppCompatActivity {
         button.setEnabled(false);
         button.setText(R.string.btn_retrieving_chat_log);
 
-        // Create message buffer
-        byte[] buf = new byte[NetworkConsts.PAYLOAD_SIZE];
-        try {
-            buf = new Message(username, uuid, null, MessageTypes.RETRIEVE_CHAT_LOG, null).json.getBytes();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        // Build packet
-        DatagramPacket packet = new DatagramPacket(buf, 0, buf.length, ipAddress, port);
-
-        try {
-            socket.send(packet);
-        } catch (IOException e) {
-            errorDiag("Could not send registration message.");
-        }
-
         if (retrieveChatLog != null)
             retrieveChatLog.cancel(true);
         retrieveChatLog = new RetrieveChatLog();
         retrieveChatLog.execute(this);
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public InetAddress getIpAddress() {
+        return ipAddress;
+    }
+
+    public int getPort() {
+        return port;
     }
 
     // Used to print error messages as dialog.

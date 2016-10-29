@@ -6,6 +6,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
@@ -15,6 +18,7 @@ import java.util.PriorityQueue;
 import ch.ethz.inf.vs.a3.message.ErrorCodes;
 import ch.ethz.inf.vs.a3.message.Message;
 import ch.ethz.inf.vs.a3.message.MessageComparator;
+import ch.ethz.inf.vs.a3.message.MessageTypes;
 
 /**
  * Created by linus on 25.10.2016.
@@ -29,15 +33,32 @@ public class RetrieveChatLog extends AsyncTask<ChatActivity, Void, PriorityQueue
     @Override
     protected PriorityQueue<Message> doInBackground(ChatActivity... params) {
         activity = params[0];
+        DatagramSocket socket = UDPClient.getSocket();
+
+        // Create message buffer
+        byte[] buf = new byte[NetworkConsts.PAYLOAD_SIZE];
+        try {
+            buf = new Message(activity.getUsername(), activity.getUuid(), null, MessageTypes.RETRIEVE_CHAT_LOG, null).json.getBytes();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // Build packet
+        DatagramPacket packet = new DatagramPacket(buf, 0, buf.length, activity.getIpAddress(), activity.getPort());
+
+        try {
+            socket.send(packet);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         PriorityQueue<Message> queue = new PriorityQueue<>(1, new MessageComparator());
-        DatagramSocket socket = UDPClient.getSocket();
         try {
             socket.setSoTimeout(NetworkConsts.SOCKET_TIMEOUT);
             while (!isCancelled()) {
                 try {
                     byte[] buffer = new byte[NetworkConsts.PAYLOAD_SIZE];
-                    DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                    packet = new DatagramPacket(buffer, buffer.length);
                     socket.receive(packet);
                     String response = new String(buffer, 0, packet.getLength());
                     Log.d(LOG_TAG, "Response: " + response);
@@ -61,7 +82,6 @@ public class RetrieveChatLog extends AsyncTask<ChatActivity, Void, PriorityQueue
     protected void onPostExecute(PriorityQueue<Message> queue) {
         if (queue.size() == 0)
             return;
-        Log.d("###################", Integer.toString(queue.size()));
 
         int i = 0;
         String[] contents = new String[queue.size()];
