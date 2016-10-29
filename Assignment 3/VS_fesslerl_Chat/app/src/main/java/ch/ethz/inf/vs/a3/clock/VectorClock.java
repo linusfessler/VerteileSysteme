@@ -36,7 +36,7 @@ public class VectorClock implements Clock{
     @Override
     public void setClock(Clock other) {
         if (other instanceof VectorClock)
-            vector = ((VectorClock) other).vector;
+            vector = new HashMap<>(((VectorClock) other).vector);
     }
 
     @Override
@@ -51,11 +51,12 @@ public class VectorClock implements Clock{
             return false;
 
         VectorClock clock = (VectorClock) other;
-        for (int pid : vector.keySet())
-            if (clock.vector.containsKey(pid) && vector.get(pid) > clock.vector.get(pid))
+        for (int pid : vector.keySet()) {
+            if (!clock.vector.containsKey(pid) || vector.get(pid) > clock.vector.get(pid))
                 return false;
+        }
 
-        return true;
+        return !vector.equals(clock.vector);
     }
 
     @Override
