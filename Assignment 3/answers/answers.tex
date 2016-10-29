@@ -47,39 +47,37 @@
 
 \begin{enumerate}
 
-\item {What are the main advantages of using Vector Clocks over Lamport timestamps?} \vspace{4pt}\\ 
-The main advantage of Vector Clocks over Lamport timestamps is that with Vector Clocks any process in an distributed system knows the causal dependencies of events. This holds because Vector Clocks fulfill the strong clock condition defined as follows:
+\item {What are the main advantages of using Vector Clocks over Lamport timestamps?}
+ 
+The main advantage of Vector Clocks over Lamport timestamps is that with Vector Clocks, any process in a distributed system knows the causal dependencies of events. This holds because Vector Clocks fulfill the strong clock condition defined as follows:
 
-Be $e_1,e_2$ events. Let $C(e)$ denote the Vector Clock of event $e$. Then $$e_1 \prec e_2 \Longleftrightarrow C(e_1) < C(e_2)$$ (Where $\prec$ is the "happens before" relation between events and the $<$ relation as defined in question 2.)
+Let $e_1,e_2$ be events. Let $C(e)$ denote the Vector Clock of event $e$. Then $$e_1 \prec e_2 \Longleftrightarrow C(e_1) < C(e_2)$$ (where $\prec$ is the "happens before" relation between events and the $<$ relation as defined in question 2).
 
-Even if the strong clock condition is not required, Vector Clocks have the advantage to be unique. Two different events can have the same Lamport timestamp.\\
+Even if the strong clock condition is not required, Vector Clocks have the advantage that they are unique. Two different events can have the same Lamport timestamp but not the same time vector.
 
+\item {Give the two conditions for two Vector Clocks to be causally dependent?}
 
-\item {Give the two conditions for two Vector Clocks to be causally dependent?} \vspace{4pt}\\ 
-(Remark: The notion of "causal dependence" for Vector Clocks was not defined in class/in the exercise slides. So we assume that we have to give the conditions for the $<$ relation.) \\
-Be $C,D$ Vector Clocks in a system with $n$ processes. Let $C_i$ denote the i-th element of $C$. Then $C < D$ if and only if: 
+(Remark: The notion of "causal dependence" for Vector Clocks was not defined in class/in the exercise slides. So we assume that we have to give the conditions for the $<$ relation.)\\
+Let $C,D$ be Vector Clocks in a system with $n$ processes. Let $C_i$ denote the i-th element of $C$. Then $C < D$ if and only if:
 \begin{enumerate}
 \item $C \not= D$ and
-\item $C_i \le D_i ~|~\forall i : 1 \le i \le n$
+\item $C_i \le D_i ~|~\forall i : 1 \le i \le n$.
 \end{enumerate}
 
 
-\item {Does a clock tick happen before or after the sending of a message. What are the implications
-of changing this?} \vspace{4pt}\\ 
-The clock ticks happen before the sending of a message. If the tick happened after sending the message, the clock condition would not be fullfilled. Consider the following situation: \\
-\includegraphics[scale=0.4]{question3_example}\\
-In this case, the clock condition is violated because clearly $$e1 \prec e2 \wedge C(e1) = \begin{pmatrix} 1 \\ 0 \\ 0 \end{pmatrix} \not< \begin{pmatrix} 0 \\ 1 \\ 0 \end{pmatrix} = C(e2)$$.
+\item {Does a clock tick happen before or after the sending of a message. What are the implications of changing this?}
+
+The clock ticks happen before the sending of a message. If the tick happened after sending the message, the clock condition would not be fullfilled. Consider the following situation: \includegraphics[scale=0.4]{question3_example}
+
+In this case, the clock condition is violated because clearly $$e1 \prec e2 \wedge C(e1) = \begin{pmatrix} 1 \\ 0 \\ 0 \end{pmatrix} \not< \begin{pmatrix} 0 \\ 1 \\ 0 \end{pmatrix} = C(e2).$$
  
-\item {Fill in the corresponding vector clocks from Figure 1.} \vspace{4pt}\\ 
+\item {Fill in the corresponding vector clocks from Figure 1.}
+
 \includegraphics[scale=0.4]{figure1_completed}
-\item {Read the paper Dynamic Vector Clocks for Consistent Ordering of Events in Dynamic
-Distributed Applications by Tobias Landes2
-that gives a good overview on the discussed
-methods. In particular, which problem of vector clocks is solved in the paper?} \vspace{4pt}\\ 
-In a system with "normal" vector clocks every process have to know the total number of processes in advance. This number has to be constant and cannot change.
-The paper introduces the concept of dynamic vector clocks which can be used in systems with a varying number if processes.
+\item {Read the paper \textit{Dynamic Vector Clocks for Consistent Ordering of Events in Dynamic Distributed Applications} by Tobias Landes that gives a good overview on the discussed methods. In particular, which problem of vector clocks is solved in the paper?}
 
-
+In a system with "normal" vector clocks every process has to know the total number of processes in advance. This number has to be constant and cannot change.
+The paper introduces the concept of dynamic vector clocks which can be used in systems with a varying number of processes.
 \end{enumerate}
 
 \end{document}
