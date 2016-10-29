@@ -1,5 +1,6 @@
 package ch.ethz.inf.vs.a3.udpclient;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +26,8 @@ public class ChatActivity extends AppCompatActivity {
     private int port;
     private DatagramSocket socket;
 
+    private static RetrieveChatLog retrieveChatLog;
+
     private final static String LOG_TAG = "ChatActivity";
 
     @Override
@@ -44,6 +47,13 @@ public class ChatActivity extends AppCompatActivity {
         setTitle("Distributed Chat, connected as " + username);
 
         socket = UDPClient.getSocket();
+
+        /*if (retrieveChatLog != null && retrieveChatLog.getStatus() != AsyncTask.Status.FINISHED) {
+            Log.d("###################", "#################");
+            Button button = ((Button) findViewById(R.id.btn_retrieve_chat_log));
+            button.setEnabled(false);
+            button.setText(R.string.btn_retrieving_chat_log);
+        }*/
     }
 
     public void onRetrieveChatLogClicked(View v) {
@@ -68,7 +78,10 @@ public class ChatActivity extends AppCompatActivity {
             errorDiag("Could not send registration message.");
         }
 
-        new RetrieveChatLog().execute(this);
+        if (retrieveChatLog != null)
+            retrieveChatLog.cancel(true);
+        retrieveChatLog = new RetrieveChatLog();
+        retrieveChatLog.execute(this);
     }
 
     // Used to print error messages as dialog.

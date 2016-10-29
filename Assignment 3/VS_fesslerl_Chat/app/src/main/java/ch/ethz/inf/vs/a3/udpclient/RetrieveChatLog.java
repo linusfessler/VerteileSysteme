@@ -34,7 +34,7 @@ public class RetrieveChatLog extends AsyncTask<ChatActivity, Void, PriorityQueue
         DatagramSocket socket = UDPClient.getSocket();
         try {
             socket.setSoTimeout(NetworkConsts.SOCKET_TIMEOUT);
-            while (true) {
+            while (!isCancelled()) {
                 try {
                     byte[] buffer = new byte[NetworkConsts.PAYLOAD_SIZE];
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -59,8 +59,9 @@ public class RetrieveChatLog extends AsyncTask<ChatActivity, Void, PriorityQueue
 
     @Override
     protected void onPostExecute(PriorityQueue<Message> queue) {
-        if (queue == null || queue.size() == 0)
+        if (queue.size() == 0)
             return;
+        Log.d("###################", Integer.toString(queue.size()));
 
         int i = 0;
         String[] contents = new String[queue.size()];
